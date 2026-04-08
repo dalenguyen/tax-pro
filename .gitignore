@@ -49,3 +49,6 @@ Thumbs.db
 
 .nx/polygraph
 .angular
+
+# Prisma generated client
+libs/db/src/generated/
