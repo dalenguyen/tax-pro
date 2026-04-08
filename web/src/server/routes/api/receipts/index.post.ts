@@ -1,0 +1,36 @@
+import { defineEventHandler, readBody, getQuery, createError } from 'h3';
+import { receiptsCol } from '@can-tax-pro/db';
+import { createReceiptSchema } from '@can-tax-pro/utils';
+import { ReceiptStatus } from '@can-tax-pro/types';
+import { FieldValue } from 'firebase-admin/firestore';
+
+const TEST_USER_ID = 'test-user';
+
+export default defineEventHandler(async (event) => {
+  const query = getQuery(event);
+  const taxYearId = query['taxYearId'] as string;
+  if (!taxYearId) {
+    throw createError({ statusCode: 400, statusMessage: 'taxYearId is required' });
+  }
+
+  const body = await readBody(event);
+  const parsed = createReceiptSchema.safeParse(body);
+  if (!parsed.success) {
+    throw createError({ statusCode: 400, statusMessage: parsed.error.message });
+  }
+
+  const data = parsed.data;
+
+  const docRef = await receiptsCol(TEST_USER_ID, taxYearId).add({
+    fileName: data.fileName,
+    mimeType: data.mimeType,
+    fileSize: data.fileSize,
+    storagePath: data.storagePath,
+    status: ReceiptStatus.PENDING,
+    createdAt: FieldValue.serverTimestamp(),
+    updatedAt: FieldValue.serverTimestamp(),
+  });
+
+  const doc = await docRef.get();
+  return { id: doc.id, ...doc.data() };
+});
