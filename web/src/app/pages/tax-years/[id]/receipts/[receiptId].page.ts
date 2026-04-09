@@ -3,13 +3,18 @@ import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ReceiptService } from '../../../../services/receipt.service';
-import { Receipt, LinkedType } from '@can-tax-pro/types';
+import { ExpenseService } from '../../../../services/expense.service';
+import { Receipt, LinkedType, ExpenseCategoryType, Currency } from '@can-tax-pro/types';
+import {
+  ReceiptExtractionReviewComponent,
+  ExtractionFormData,
+} from '../../../../components/receipt-extraction-review.component';
 
 type ReceiptWithUrl = Receipt & { downloadUrl: string };
 
 @Component({
   selector: 'app-receipt-detail',
-  imports: [RouterLink, FormsModule, DatePipe, DecimalPipe],
+  imports: [RouterLink, FormsModule, DatePipe, DecimalPipe, ReceiptExtractionReviewComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="min-h-screen bg-gray-50 p-6">
@@ -109,10 +114,18 @@ type ReceiptWithUrl = Receipt & { downloadUrl: string };
               <div class="bg-white rounded-lg shadow p-4 flex flex-col gap-2">
                 <h2 class="text-sm font-semibold text-gray-700 mb-1">Actions</h2>
                 <button
-                  class="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 text-sm opacity-60 cursor-not-allowed"
-                  disabled
-                  title="Coming in issue #10">
-                  Extract with AI (coming soon)
+                  (click)="onExtract()"
+                  [disabled]="extracting()"
+                  class="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 text-sm disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                  @if (extracting()) {
+                    <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                    Extracting...
+                  } @else {
+                    Extract with AI
+                  }
                 </button>
                 <button (click)="onDelete()"
                         class="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 text-sm">
@@ -121,6 +134,17 @@ type ReceiptWithUrl = Receipt & { downloadUrl: string };
               </div>
             </div>
           </div>
+
+          <!-- Extraction Review -->
+          @if (extractionResult()) {
+            <div class="mt-6">
+              <app-receipt-extraction-review
+                [extractedData]="extractionResult()!"
+                (confirmed)="onExtractionConfirmed($event)"
+                (createExpense)="onCreateExpense($event)"
+              />
+            </div>
+          }
         }
       </div>
     </div>
@@ -130,11 +154,14 @@ export default class ReceiptDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private receiptService = inject(ReceiptService);
+  private expenseService = inject(ExpenseService);
 
   taxYearId = '';
   receiptId = '';
   receipt = signal<ReceiptWithUrl | null>(null);
   loading = signal(true);
+  extracting = signal(false);
+  extractionResult = signal<Record<string, unknown> | null>(null);
   linkedTypes = Object.values(LinkedType);
   linkedType = '';
   linkedId = '';
@@ -156,6 +183,10 @@ export default class ReceiptDetailComponent implements OnInit {
       this.receipt.set(data);
       this.linkedType = (data.linkedType as string) ?? '';
       this.linkedId = data.linkedId ?? '';
+      // Show extraction result if already extracted
+      if (data.extractedRaw && Object.keys(data.extractedRaw).length > 0) {
+        this.extractionResult.set(data.extractedRaw as Record<string, unknown>);
+      }
     } finally {
       this.loading.set(false);
     }
@@ -165,6 +196,44 @@ export default class ReceiptDetailComponent implements OnInit {
     await this.receiptService.updateReceipt(this.taxYearId, this.receiptId, {
       linkedType: (this.linkedType as LinkedType) || undefined,
       linkedId: this.linkedId || undefined,
+    });
+    await this.loadReceipt();
+  }
+
+  async onExtract() {
+    this.extracting.set(true);
+    try {
+      const result = await this.receiptService.extractReceipt(this.taxYearId, this.receiptId);
+      this.extractionResult.set(result.extracted ?? result.extractedRaw ?? {});
+      await this.loadReceipt();
+    } catch (err) {
+      console.error('Extraction failed:', err);
+      alert('Extraction failed. Please try again.');
+    } finally {
+      this.extracting.set(false);
+    }
+  }
+
+  async onExtractionConfirmed(form: ExtractionFormData) {
+    await this.receiptService.updateReceipt(this.taxYearId, this.receiptId, {
+      status: 'VERIFIED' as any,
+    });
+    await this.loadReceipt();
+  }
+
+  async onCreateExpense(form: ExtractionFormData) {
+    const expense = await this.expenseService.createEntry(this.taxYearId, {
+      category: (form.category as ExpenseCategoryType) || ExpenseCategoryType.OTHER,
+      vendor: form.vendor || undefined,
+      amount: form.amount ?? 0,
+      currency: (form.currency as Currency) || Currency.CAD,
+      date: form.date || new Date().toISOString().slice(0, 10),
+    });
+    // Link receipt to new expense
+    await this.receiptService.updateReceipt(this.taxYearId, this.receiptId, {
+      linkedType: LinkedType.EXPENSE,
+      linkedId: expense.id,
+      status: 'VERIFIED' as any,
     });
     await this.loadReceipt();
   }

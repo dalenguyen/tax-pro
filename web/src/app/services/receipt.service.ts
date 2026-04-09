@@ -54,6 +54,10 @@ export class ReceiptService {
     await firstValueFrom(this.http.delete(`/api/receipts/${id}?taxYearId=${taxYearId}`));
   }
 
+  async extractReceipt(taxYearId: string, id: string) {
+    return firstValueFrom(this.http.post<any>(`/api/receipts/${id}/extract?taxYearId=${taxYearId}`, {}));
+  }
+
   async uploadFile(uploadUrl: string, file: File): Promise<void> {
     await fetch(uploadUrl, {
       method: 'PUT',
