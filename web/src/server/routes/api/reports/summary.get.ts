@@ -9,6 +9,7 @@ import {
   taxYearsCol,
 } from '@can-tax-pro/db';
 import { IncomeSourceType, InvestmentAccountType } from '@can-tax-pro/types';
+import { estimateFederalTax } from '@can-tax-pro/utils';
 
 const TEST_USER_ID = 'test-user';
 
@@ -70,6 +71,10 @@ export default defineEventHandler(async (event) => {
     else if (d['accountType'] === InvestmentAccountType.TFSA) tfsaContributions += amt;
   }
 
+  const totalIncome = totalBusinessIncome + totalRentalIncome;
+  const totalDeductions = totalBusinessExpenses + rrspContributions;
+  const taxableIncome = totalIncome - totalDeductions;
+
   return {
     taxYear: taxYearData?.['year'] ?? 0,
     totalBusinessIncome,
@@ -80,7 +85,8 @@ export default defineEventHandler(async (event) => {
     netRentalIncome: totalRentalIncome - totalRentalExpenses,
     rrspContributions,
     tfsaContributions,
-    totalIncome: totalBusinessIncome + totalRentalIncome,
-    totalDeductions: totalBusinessExpenses + rrspContributions,
+    totalIncome,
+    totalDeductions,
+    estimatedTax: estimateFederalTax(taxableIncome),
   };
 });

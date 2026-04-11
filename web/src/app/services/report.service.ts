@@ -30,4 +30,12 @@ export class ReportService {
   async getT2125(taxYearId: string) {
     return firstValueFrom(this.http.get<any>(`/api/reports/t2125?taxYearId=${taxYearId}`));
   }
+
+  async getMonthlyTrend(taxYearId: string) {
+    return firstValueFrom(
+      this.http.get<{ months: { month: string; income: number; expenses: number }[] }>(
+        `/api/reports/monthly-trend?taxYearId=${taxYearId}`
+      )
+    );
+  }
 }
