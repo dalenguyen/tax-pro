@@ -1,0 +1,9 @@
+.git
+.claude
+dist
+node_modules
+coverage
+*.log
+.env*
+!.env.example
+terraform
