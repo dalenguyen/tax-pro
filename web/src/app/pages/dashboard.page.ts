@@ -1,13 +1,20 @@
-import { Component, inject, OnInit, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 import { TaxYearService } from '../services/tax-year.service';
 import { ReportService } from '../services/report.service';
 import { TaxSummary, TaxYear } from '@can-tax-pro/types';
+import { PieChartComponent, PieSlice } from '../components/pie-chart.component';
+import { BarChartComponent, BarDatum } from '../components/bar-chart.component';
+import { LineChartComponent, LineSeries } from '../components/line-chart.component';
+
+interface MonthlyTrend {
+  months: { month: string; income: number; expenses: number }[];
+}
 
 @Component({
   selector: 'app-dashboard',
-  imports: [RouterLink, DecimalPipe],
+  imports: [RouterLink, DecimalPipe, PieChartComponent, BarChartComponent, LineChartComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="min-h-screen bg-gray-50 p-6">
@@ -83,12 +90,55 @@ import { TaxSummary, TaxYear } from '@can-tax-pro/types';
                   <p class="text-xs text-gray-400 mt-1">CAD</p>
                 </div>
                 <div class="bg-white rounded-lg shadow p-5">
+                  <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Estimated Tax</p>
+                  <p class="text-2xl font-bold text-amber-600 mt-1">
+                    \${{ summary()!.estimatedTax | number:'1.2-2' }}
+                  </p>
+                  <p class="text-xs text-gray-400 mt-1">Federal only · 2024 brackets</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <div class="bg-white rounded-lg shadow p-5">
+                  <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Deductions</p>
+                  <p class="text-2xl font-bold text-gray-900 mt-1">
+                    \${{ summary()!.totalDeductions | number:'1.2-2' }}
+                  </p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-5">
                   <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">RRSP Contributions</p>
                   <p class="text-2xl font-bold text-blue-600 mt-1">
                     \${{ summary()!.rrspContributions | number:'1.2-2' }}
                   </p>
-                  <p class="text-xs text-gray-400 mt-1">CAD</p>
                 </div>
+              </div>
+
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+                <div class="bg-white rounded-lg shadow p-5">
+                  <h3 class="text-sm font-semibold text-gray-700 mb-3">Income by Source</h3>
+                  @if (chartsLoading()) {
+                    <p class="text-sm text-gray-400">Loading...</p>
+                  } @else {
+                    <app-pie-chart [data]="incomeSlices()" />
+                  }
+                </div>
+                <div class="bg-white rounded-lg shadow p-5">
+                  <h3 class="text-sm font-semibold text-gray-700 mb-3">Expenses by Category</h3>
+                  @if (chartsLoading()) {
+                    <p class="text-sm text-gray-400">Loading...</p>
+                  } @else {
+                    <app-bar-chart [data]="expenseBars()" />
+                  }
+                </div>
+              </div>
+
+              <div class="bg-white rounded-lg shadow p-5 mb-6">
+                <h3 class="text-sm font-semibold text-gray-700 mb-3">Monthly Trend</h3>
+                @if (chartsLoading()) {
+                  <p class="text-sm text-gray-400">Loading...</p>
+                } @else {
+                  <app-line-chart [labels]="trendLabels()" [series]="trendSeries()" />
+                }
               </div>
 
               @if (summary()!.totalRentalIncome > 0 || summary()!.totalRentalExpenses > 0) {
@@ -128,6 +178,29 @@ export default class DashboardComponent implements OnInit {
   summary = signal<TaxSummary | null>(null);
   summaryLoading = signal(false);
 
+  incomeStatement = signal<{ groups: { sourceType: string; total: number }[] } | null>(null);
+  expenseBreakdown = signal<{ groups: { category: string; total: number }[] } | null>(null);
+  monthlyTrend = signal<MonthlyTrend | null>(null);
+  chartsLoading = signal(false);
+
+  incomeSlices = computed<PieSlice[]>(() =>
+    (this.incomeStatement()?.groups ?? []).map((g) => ({ label: g.sourceType, value: g.total }))
+  );
+
+  expenseBars = computed<BarDatum[]>(() =>
+    (this.expenseBreakdown()?.groups ?? []).map((g) => ({ label: g.category, value: g.total }))
+  );
+
+  trendLabels = computed(() => (this.monthlyTrend()?.months ?? []).map((m) => m.month.slice(5)));
+
+  trendSeries = computed<LineSeries[]>(() => {
+    const months = this.monthlyTrend()?.months ?? [];
+    return [
+      { label: 'Income', color: '#16a34a', points: months.map((m) => m.income) },
+      { label: 'Expenses', color: '#dc2626', points: months.map((m) => m.expenses) },
+    ];
+  });
+
   ngOnInit() {
     this.taxYearService.loadTaxYears();
   }
@@ -135,12 +208,25 @@ export default class DashboardComponent implements OnInit {
   async selectTaxYear(ty: TaxYear) {
     this.selectedTaxYear.set(ty);
     this.summary.set(null);
+    this.incomeStatement.set(null);
+    this.expenseBreakdown.set(null);
+    this.monthlyTrend.set(null);
     this.summaryLoading.set(true);
+    this.chartsLoading.set(true);
     try {
-      const data = await this.reportService.getSummary(ty.id);
-      this.summary.set(data);
+      const [summary, income, expense, trend] = await Promise.all([
+        this.reportService.getSummary(ty.id),
+        this.reportService.getIncomeStatement(ty.id),
+        this.reportService.getExpenseBreakdown(ty.id),
+        this.reportService.getMonthlyTrend(ty.id),
+      ]);
+      this.summary.set(summary);
+      this.incomeStatement.set(income);
+      this.expenseBreakdown.set(expense);
+      this.monthlyTrend.set(trend);
     } finally {
       this.summaryLoading.set(false);
+      this.chartsLoading.set(false);
     }
   }
 }

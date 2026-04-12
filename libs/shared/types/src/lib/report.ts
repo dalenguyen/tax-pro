@@ -10,6 +10,8 @@ export interface TaxSummary {
   tfsaContributions: number;
   totalIncome: number;
   totalDeductions: number;
+  /** Rough federal income tax estimate on taxable income (totalIncome - totalDeductions). */
+  estimatedTax: number;
 }
 
 export interface IncomeBySource {

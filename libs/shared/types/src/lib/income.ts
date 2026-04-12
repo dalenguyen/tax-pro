@@ -26,4 +26,4 @@ export interface CreateIncomeEntryDto {
   metadata?: Record<string, unknown>;
 }
 
-export interface UpdateIncomeEntryDto extends Partial<CreateIncomeEntryDto> {}
+export type UpdateIncomeEntryDto = Partial<CreateIncomeEntryDto>
