@@ -1,9 +1,10 @@
 import { defineEventHandler, getQuery, createError } from 'h3';
 import { incomeEntriesCol } from '@can-tax-pro/db';
+import { requireUserId } from '../../../lib/require-auth';
 
-const TEST_USER_ID = 'test-user';
 
 export default defineEventHandler(async (event) => {
+  const userId = requireUserId(event);
   const query = getQuery(event);
   const taxYearId = query['taxYearId'] as string;
   if (!taxYearId) {
@@ -11,9 +12,9 @@ export default defineEventHandler(async (event) => {
   }
 
   const sourceType = query['sourceType'] as string;
-  let ref = incomeEntriesCol(TEST_USER_ID, taxYearId).orderBy('date', 'desc');
+  let ref = incomeEntriesCol(userId, taxYearId).orderBy('date', 'desc');
   if (sourceType) {
-    ref = incomeEntriesCol(TEST_USER_ID, taxYearId)
+    ref = incomeEntriesCol(userId, taxYearId)
       .where('sourceType', '==', sourceType)
       .orderBy('date', 'desc');
   }

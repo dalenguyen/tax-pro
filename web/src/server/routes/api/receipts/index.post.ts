@@ -3,10 +3,11 @@ import { receiptsCol } from '@can-tax-pro/db';
 import { createReceiptSchema } from '@can-tax-pro/utils';
 import { ReceiptStatus } from '@can-tax-pro/types';
 import { FieldValue } from 'firebase-admin/firestore';
+import { requireUserId } from '../../../lib/require-auth';
 
-const TEST_USER_ID = 'test-user';
 
 export default defineEventHandler(async (event) => {
+  const userId = requireUserId(event);
   const query = getQuery(event);
   const taxYearId = query['taxYearId'] as string;
   if (!taxYearId) {
@@ -21,7 +22,7 @@ export default defineEventHandler(async (event) => {
 
   const data = parsed.data;
 
-  const docRef = await receiptsCol(TEST_USER_ID, taxYearId).add({
+  const docRef = await receiptsCol(userId, taxYearId).add({
     fileName: data.fileName,
     mimeType: data.mimeType,
     fileSize: data.fileSize,

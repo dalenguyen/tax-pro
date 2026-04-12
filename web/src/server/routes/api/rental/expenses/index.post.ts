@@ -2,10 +2,11 @@ import { defineEventHandler, readBody, getQuery, createError } from 'h3';
 import { rentalExpensesCol } from '@can-tax-pro/db';
 import { createRentalExpenseSchema } from '@can-tax-pro/utils';
 import { FieldValue } from 'firebase-admin/firestore';
+import { requireUserId } from '../../../../lib/require-auth';
 
-const TEST_USER_ID = 'test-user';
 
 export default defineEventHandler(async (event) => {
+  const userId = requireUserId(event);
   const query = getQuery(event);
   const taxYearId = query['taxYearId'] as string;
   const propertyId = query['propertyId'] as string;
@@ -20,7 +21,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const data = parsed.data;
-  const docRef = await rentalExpensesCol(TEST_USER_ID, taxYearId, propertyId).add({
+  const docRef = await rentalExpensesCol(userId, taxYearId, propertyId).add({
     category: data.category,
     description: data.description || null,
     amount: data.amount,

@@ -1,16 +1,17 @@
 import { defineEventHandler, getQuery, createError } from 'h3';
 import { rentalPropertiesCol, rentalIncomesCol, rentalExpensesCol } from '@can-tax-pro/db';
+import { requireUserId } from '../../../lib/require-auth';
 
-const TEST_USER_ID = 'test-user';
 
 export default defineEventHandler(async (event) => {
+  const userId = requireUserId(event);
   const query = getQuery(event);
   const taxYearId = query['taxYearId'] as string;
   if (!taxYearId) {
     throw createError({ statusCode: 400, statusMessage: 'taxYearId is required' });
   }
 
-  const propsSnap = await rentalPropertiesCol(TEST_USER_ID, taxYearId).get();
+  const propsSnap = await rentalPropertiesCol(userId, taxYearId).get();
 
   let grandTotalIncome = 0;
   let grandTotalExpenses = 0;
@@ -19,8 +20,8 @@ export default defineEventHandler(async (event) => {
     propsSnap.docs.map(async (propDoc) => {
       const prop = { id: propDoc.id, ...propDoc.data() };
       const [incSnap, expSnap] = await Promise.all([
-        rentalIncomesCol(TEST_USER_ID, taxYearId, propDoc.id).orderBy('date', 'desc').get(),
-        rentalExpensesCol(TEST_USER_ID, taxYearId, propDoc.id).orderBy('date', 'desc').get(),
+        rentalIncomesCol(userId, taxYearId, propDoc.id).orderBy('date', 'desc').get(),
+        rentalExpensesCol(userId, taxYearId, propDoc.id).orderBy('date', 'desc').get(),
       ]);
 
       const incomes = incSnap.docs.map((d) => ({ id: d.id, ...d.data() }));

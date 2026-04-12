@@ -1,9 +1,10 @@
 import { defineEventHandler, getQuery, getRouterParam, createError } from 'h3';
 import { rentalIncomeDoc } from '@can-tax-pro/db';
+import { requireUserId } from '../../../../lib/require-auth';
 
-const TEST_USER_ID = 'test-user';
 
 export default defineEventHandler(async (event) => {
+  const userId = requireUserId(event);
   const id = getRouterParam(event, 'id');
   const query = getQuery(event);
   const taxYearId = query['taxYearId'] as string;
@@ -12,7 +13,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'id, taxYearId and propertyId are required' });
   }
 
-  const ref = rentalIncomeDoc(TEST_USER_ID, taxYearId, propertyId, id);
+  const ref = rentalIncomeDoc(userId, taxYearId, propertyId, id);
   const doc = await ref.get();
   if (!doc.exists) {
     throw createError({ statusCode: 404, statusMessage: 'Rental income not found' });

@@ -3,10 +3,11 @@ import { expenseEntriesCol, db } from '@can-tax-pro/db';
 import { createExpenseEntrySchema, computeAmountCad } from '@can-tax-pro/utils';
 import { Currency } from '@can-tax-pro/types';
 import { FieldValue } from 'firebase-admin/firestore';
+import { requireUserId } from '../../../lib/require-auth';
 
-const TEST_USER_ID = 'test-user';
 
 export default defineEventHandler(async (event) => {
+  const userId = requireUserId(event);
   const query = getQuery(event);
   const taxYearId = query['taxYearId'] as string;
   if (!taxYearId) {
@@ -28,7 +29,7 @@ export default defineEventHandler(async (event) => {
   });
 
   const batch = db.batch();
-  const colRef = expenseEntriesCol(TEST_USER_ID, taxYearId);
+  const colRef = expenseEntriesCol(userId, taxYearId);
 
   for (const data of validatedEntries) {
     const currency = data.currency || Currency.CAD;
