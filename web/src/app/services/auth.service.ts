@@ -62,6 +62,7 @@ export class AuthService {
       await setDoc(ref, {
         email: user.email,
         displayName: user.displayName,
+        photoURL: user.photoURL,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });

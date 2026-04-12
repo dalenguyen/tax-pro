@@ -1,6 +1,7 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { authGuard } from '../services/auth.guard';
+import { AuthService } from '../services/auth.service';
 
 export const routeMeta = { canActivate: [authGuard] };
 
@@ -20,16 +21,21 @@ export const routeMeta = { canActivate: [authGuard] };
         <div class="bg-white rounded-lg shadow p-6 mb-6">
           <h2 class="text-lg font-semibold text-gray-900 mb-4">Profile</h2>
           <div class="space-y-3">
-            <div class="flex items-center gap-3">
-              <div class="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xl font-bold">
-                U
-              </div>
+            <div class="flex items-center gap-4">
+              @if (auth.currentUser()?.photoURL) {
+                <img [src]="auth.currentUser()!.photoURL!" alt="Avatar"
+                     class="w-14 h-14 rounded-full object-cover" />
+              } @else {
+                <div class="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xl font-bold">
+                  {{ (auth.currentUser()?.displayName ?? auth.currentUser()?.email ?? 'U')[0].toUpperCase() }}
+                </div>
+              }
               <div>
-                <p class="font-medium text-gray-900">User</p>
-                <p class="text-sm text-gray-500">user&#64;example.com</p>
+                <p class="font-medium text-gray-900">{{ auth.currentUser()?.displayName ?? '—' }}</p>
+                <p class="text-sm text-gray-500">{{ auth.currentUser()?.email }}</p>
               </div>
             </div>
-            <p class="text-sm text-gray-400 italic">Profile management coming soon.</p>
+            <p class="text-sm text-gray-400 italic">Business name &amp; province coming soon.</p>
           </div>
         </div>
 
@@ -42,10 +48,15 @@ export const routeMeta = { canActivate: [authGuard] };
         <!-- Account Section -->
         <div class="bg-white rounded-lg shadow p-6">
           <h2 class="text-lg font-semibold text-gray-900 mb-4">Account</h2>
-          <p class="text-sm text-gray-400 italic">Account management coming soon.</p>
+          <button (click)="auth.logout()"
+                  class="text-sm text-red-600 hover:text-red-800 font-medium">
+            Sign out
+          </button>
         </div>
       </div>
     </div>
   `,
 })
-export default class SettingsComponent {}
+export default class SettingsComponent {
+  auth = inject(AuthService);
+}
