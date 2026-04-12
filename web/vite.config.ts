@@ -19,6 +19,11 @@ export default defineConfig(({ mode }) => {
         allow: ['.'],
       },
     },
+    ssr: {
+      // firebase-admin uses CJS exports — keep it external so Vite SSR
+      // doesn't try to transform it as ESM.
+      external: ['firebase-admin', 'firebase-admin/app', 'firebase-admin/auth', 'firebase-admin/firestore'],
+    },
     plugins: [
       analog({
         nitro: {
