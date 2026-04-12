@@ -26,4 +26,4 @@ export interface CreateInvestmentDto {
   notes?: string;
 }
 
-export interface UpdateInvestmentDto extends Partial<CreateInvestmentDto> {}
+export type UpdateInvestmentDto = Partial<CreateInvestmentDto>
