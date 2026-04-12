@@ -25,6 +25,16 @@ export default defineConfig(({ mode }) => {
           // Use node-server preset in production so Cloud Run gets a proper
           // Node.js HTTP server. Local dev / test keep the default preset.
           preset: mode === 'production' ? 'node-server' : undefined,
+          // firebase-admin and its sub-packages are CJS — keep them external
+          // so Nitro/Vite doesn't try to bundle them as ESM.
+          externals: {
+            external: [
+              'firebase-admin',
+              'firebase-admin/app',
+              'firebase-admin/auth',
+              'firebase-admin/firestore',
+            ],
+          },
         },
       }),
       nxViteTsPaths(),
