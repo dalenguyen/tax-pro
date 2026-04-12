@@ -3,6 +3,8 @@ import { isPlatformBrowser } from '@angular/common';
 import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
   createUserWithEmailAndPassword,
   signOut,
   updateProfile,
@@ -42,6 +44,12 @@ export class AuthService {
     if (!isPlatformBrowser(this.platformId)) return null;
     const user = getClientAuth().currentUser;
     return user ? user.getIdToken() : null;
+  }
+
+  async loginWithGoogle(): Promise<void> {
+    const auth = getClientAuth();
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
   }
 
   async login(email: string, password: string): Promise<void> {
