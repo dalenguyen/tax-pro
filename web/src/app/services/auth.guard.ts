@@ -7,11 +7,13 @@ import { AuthService } from './auth.service';
 
 export const authGuard: CanActivateFn = () => {
   const platformId = inject(PLATFORM_ID);
-  // Let SSR through; the browser will re-run the guard with real auth state.
-  if (!isPlatformBrowser(platformId)) return true;
+  const router = inject(Router);
+
+  // On SSR there is no persistent session — redirect to login.
+  // The browser re-runs the guard after hydration with real Firebase state.
+  if (!isPlatformBrowser(platformId)) return router.createUrlTree(['/login']);
 
   const auth = inject(AuthService);
-  const router = inject(Router);
 
   // Wait until Firebase has resolved the persisted session, then decide.
   return toObservable(auth.ready).pipe(
