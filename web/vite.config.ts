@@ -3,6 +3,7 @@
 import analog from '@analogjs/platform';
 import { defineConfig } from 'vite';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
+import { resolve } from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -45,6 +46,12 @@ export default defineConfig(({ mode }) => {
               'firebase-admin/auth',
               'firebase-admin/firestore',
             ],
+            inline: ['@can-tax-pro/db', '@can-tax-pro/types', '@can-tax-pro/utils'],
+          },
+          alias: {
+            '@can-tax-pro/db': resolve(__dirname, '../libs/db/src/index.ts'),
+            '@can-tax-pro/types': resolve(__dirname, '../libs/shared/types/src/index.ts'),
+            '@can-tax-pro/utils': resolve(__dirname, '../libs/shared/utils/src/index.ts'),
           },
         },
       }),
