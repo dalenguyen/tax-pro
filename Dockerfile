@@ -13,7 +13,7 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 
 # Build the Analog SSR app
-RUN pnpm exec nx build web --configuration=production
+RUN NODE_OPTIONS="--max-old-space-size=4096" pnpm exec nx build web --configuration=production
 
 # ---- runtime stage ----
 FROM node:22-alpine AS runtime

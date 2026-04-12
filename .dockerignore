@@ -1,6 +1,7 @@
 .git
 .claude
 dist
+!dist/web/analog
 node_modules
 coverage
 *.log

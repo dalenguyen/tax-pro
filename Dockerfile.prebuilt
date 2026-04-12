@@ -1,0 +1,9 @@
+FROM node:22-alpine
+WORKDIR /app
+ENV NODE_ENV=production
+ENV PORT=8080
+
+COPY dist/web/analog ./dist/web/analog
+
+EXPOSE 8080
+CMD ["node", "dist/web/analog/server/index.mjs"]
