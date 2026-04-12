@@ -26,6 +26,12 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       analog({
+        prerender: {
+          // Disable prerendering: the app requires auth and server-side
+          // Firebase — SSR prerender would crash without credentials.
+          routes: [],
+          sitemap: { host: '' },
+        },
         nitro: {
           // Use node-server preset in production so Cloud Run gets a proper
           // Node.js HTTP server. Local dev / test keep the default preset.
