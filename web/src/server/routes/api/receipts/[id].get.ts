@@ -1,10 +1,11 @@
 import { defineEventHandler, getQuery, getRouterParam, createError } from 'h3';
 import { receiptDoc } from '@can-tax-pro/db';
 import { generateDownloadUrl } from '../../../lib/storage';
+import { requireUserId } from '../../../lib/require-auth';
 
-const TEST_USER_ID = 'test-user';
 
 export default defineEventHandler(async (event) => {
+  const userId = requireUserId(event);
   const id = getRouterParam(event, 'id');
   const query = getQuery(event);
   const taxYearId = query['taxYearId'] as string;
@@ -12,7 +13,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'id and taxYearId are required' });
   }
 
-  const doc = await receiptDoc(TEST_USER_ID, taxYearId, id).get();
+  const doc = await receiptDoc(userId, taxYearId, id).get();
   if (!doc.exists) {
     throw createError({ statusCode: 404, statusMessage: 'Receipt not found' });
   }

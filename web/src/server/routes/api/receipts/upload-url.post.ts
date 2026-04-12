@@ -1,9 +1,10 @@
 import { defineEventHandler, readBody, createError } from 'h3';
 import { generateUploadUrl, buildStoragePath } from '../../../lib/storage';
+import { requireUserId } from '../../../lib/require-auth';
 
-const TEST_USER_ID = 'test-user';
 
 export default defineEventHandler(async (event) => {
+  const userId = requireUserId(event);
   const body = await readBody(event);
   const { fileName, contentType, taxYearId } = body;
 
@@ -11,7 +12,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'fileName, contentType, and taxYearId are required' });
   }
 
-  const storagePath = buildStoragePath(TEST_USER_ID, taxYearId, fileName);
+  const storagePath = buildStoragePath(userId, taxYearId, fileName);
   const uploadUrl = await generateUploadUrl(storagePath, contentType);
 
   return { uploadUrl, storagePath };

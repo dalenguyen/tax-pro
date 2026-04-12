@@ -30,7 +30,7 @@ export interface CreateRentalIncomeDto {
   date: string;
 }
 
-export interface UpdateRentalIncomeDto extends Partial<CreateRentalIncomeDto> {}
+export type UpdateRentalIncomeDto = Partial<CreateRentalIncomeDto>
 
 export interface RentalExpense {
   id: string;
@@ -51,4 +51,4 @@ export interface CreateRentalExpenseDto {
   metadata?: Record<string, unknown>;
 }
 
-export interface UpdateRentalExpenseDto extends Partial<CreateRentalExpenseDto> {}
+export type UpdateRentalExpenseDto = Partial<CreateRentalExpenseDto>

@@ -2,10 +2,11 @@ import { defineEventHandler, readBody, createError } from 'h3';
 import { taxYearsCol } from '@can-tax-pro/db';
 import { createTaxYearSchema } from '@can-tax-pro/utils';
 import { FieldValue } from 'firebase-admin/firestore';
+import { requireUserId } from '../../../lib/require-auth';
 
-const TEST_USER_ID = 'test-user';
 
 export default defineEventHandler(async (event) => {
+  const userId = requireUserId(event);
   const body = await readBody(event);
   const parsed = createTaxYearSchema.safeParse(body);
   if (!parsed.success) {
@@ -14,7 +15,7 @@ export default defineEventHandler(async (event) => {
 
   const { year, notes } = parsed.data;
 
-  const existing = await taxYearsCol(TEST_USER_ID)
+  const existing = await taxYearsCol(userId)
     .where('year', '==', year)
     .limit(1)
     .get();
@@ -23,7 +24,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 409, statusMessage: `Tax year ${year} already exists` });
   }
 
-  const docRef = await taxYearsCol(TEST_USER_ID).add({
+  const docRef = await taxYearsCol(userId).add({
     year,
     notes: notes || null,
     createdAt: FieldValue.serverTimestamp(),

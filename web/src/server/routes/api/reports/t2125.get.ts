@@ -1,10 +1,11 @@
 import { defineEventHandler, getQuery, createError } from 'h3';
 import { incomeEntriesCol, expenseEntriesCol } from '@can-tax-pro/db';
 import { IncomeSourceType, ExpenseCategoryType } from '@can-tax-pro/types';
+import { requireUserId } from '../../../lib/require-auth';
 
-const TEST_USER_ID = 'test-user';
 
 export default defineEventHandler(async (event) => {
+  const userId = requireUserId(event);
   const query = getQuery(event);
   const taxYearId = query['taxYearId'] as string;
   if (!taxYearId) {
@@ -12,8 +13,8 @@ export default defineEventHandler(async (event) => {
   }
 
   const [incomeSnap, expenseSnap] = await Promise.all([
-    incomeEntriesCol(TEST_USER_ID, taxYearId).get(),
-    expenseEntriesCol(TEST_USER_ID, taxYearId).get(),
+    incomeEntriesCol(userId, taxYearId).get(),
+    expenseEntriesCol(userId, taxYearId).get(),
   ]);
 
   // Gross income: INTERNET_BUSINESS + STRIPE

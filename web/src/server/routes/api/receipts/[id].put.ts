@@ -2,10 +2,11 @@ import { defineEventHandler, readBody, getQuery, getRouterParam, createError } f
 import { receiptDoc } from '@can-tax-pro/db';
 import { updateReceiptSchema } from '@can-tax-pro/utils';
 import { FieldValue } from 'firebase-admin/firestore';
+import { requireUserId } from '../../../lib/require-auth';
 
-const TEST_USER_ID = 'test-user';
 
 export default defineEventHandler(async (event) => {
+  const userId = requireUserId(event);
   const id = getRouterParam(event, 'id');
   const query = getQuery(event);
   const taxYearId = query['taxYearId'] as string;
@@ -13,7 +14,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'id and taxYearId are required' });
   }
 
-  const ref = receiptDoc(TEST_USER_ID, taxYearId, id);
+  const ref = receiptDoc(userId, taxYearId, id);
   const doc = await ref.get();
   if (!doc.exists) {
     throw createError({ statusCode: 404, statusMessage: 'Receipt not found' });

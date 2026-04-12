@@ -1,9 +1,10 @@
 import { defineEventHandler, getQuery, createError } from 'h3';
 import { receiptsCol } from '@can-tax-pro/db';
+import { requireUserId } from '../../../lib/require-auth';
 
-const TEST_USER_ID = 'test-user';
 
 export default defineEventHandler(async (event) => {
+  const userId = requireUserId(event);
   const query = getQuery(event);
   const taxYearId = query['taxYearId'] as string;
   if (!taxYearId) {
@@ -11,9 +12,9 @@ export default defineEventHandler(async (event) => {
   }
 
   const status = query['status'] as string;
-  let ref = receiptsCol(TEST_USER_ID, taxYearId).orderBy('createdAt', 'desc');
+  let ref = receiptsCol(userId, taxYearId).orderBy('createdAt', 'desc');
   if (status) {
-    ref = receiptsCol(TEST_USER_ID, taxYearId)
+    ref = receiptsCol(userId, taxYearId)
       .where('status', '==', status)
       .orderBy('createdAt', 'desc');
   }

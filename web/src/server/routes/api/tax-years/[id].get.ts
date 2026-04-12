@@ -1,13 +1,14 @@
 import { defineEventHandler, getRouterParam, createError } from 'h3';
 import { taxYearDoc } from '@can-tax-pro/db';
+import { requireUserId } from '../../../lib/require-auth';
 
-const TEST_USER_ID = 'test-user';
 
 export default defineEventHandler(async (event) => {
+  const userId = requireUserId(event);
   const id = getRouterParam(event, 'id');
   if (!id) throw createError({ statusCode: 400, statusMessage: 'Missing id' });
 
-  const doc = await taxYearDoc(TEST_USER_ID, id).get();
+  const doc = await taxYearDoc(userId, id).get();
   if (!doc.exists) {
     throw createError({ statusCode: 404, statusMessage: 'Tax year not found' });
   }

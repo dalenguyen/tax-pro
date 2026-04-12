@@ -2,10 +2,11 @@ import { defineEventHandler, readBody, getQuery, createError } from 'h3';
 import { rentalPropertiesCol } from '@can-tax-pro/db';
 import { createRentalPropertySchema } from '@can-tax-pro/utils';
 import { FieldValue } from 'firebase-admin/firestore';
+import { requireUserId } from '../../../../lib/require-auth';
 
-const TEST_USER_ID = 'test-user';
 
 export default defineEventHandler(async (event) => {
+  const userId = requireUserId(event);
   const query = getQuery(event);
   const taxYearId = query['taxYearId'] as string;
   if (!taxYearId) {
@@ -18,7 +19,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: parsed.error.message });
   }
 
-  const docRef = await rentalPropertiesCol(TEST_USER_ID, taxYearId).add({
+  const docRef = await rentalPropertiesCol(userId, taxYearId).add({
     address: parsed.data.address,
     createdAt: FieldValue.serverTimestamp(),
     updatedAt: FieldValue.serverTimestamp(),

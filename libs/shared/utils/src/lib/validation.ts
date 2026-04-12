@@ -21,7 +21,7 @@ export const createIncomeEntrySchema = z.object({
   exchangeRate: z.number().positive().optional(),
   date: z.string().date(),
   category: z.string().optional(),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
 });
 
 export const createExpenseEntrySchema = z.object({
@@ -33,7 +33,7 @@ export const createExpenseEntrySchema = z.object({
   exchangeRate: z.number().positive().optional(),
   date: z.string().date(),
   paymentMethod: z.string().optional(),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
 });
 
 export const createRentalPropertySchema = z.object({
@@ -51,7 +51,7 @@ export const createRentalExpenseSchema = z.object({
   description: z.string().optional(),
   amount: z.number().positive(),
   date: z.string().date(),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
 });
 
 export const createInvestmentSchema = z.object({

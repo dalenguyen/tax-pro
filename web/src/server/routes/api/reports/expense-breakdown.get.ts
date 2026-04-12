@@ -1,17 +1,18 @@
 import { defineEventHandler, getQuery, createError } from 'h3';
 import { expenseEntriesCol } from '@can-tax-pro/db';
 import { ExpenseCategoryType } from '@can-tax-pro/types';
+import { requireUserId } from '../../../lib/require-auth';
 
-const TEST_USER_ID = 'test-user';
 
 export default defineEventHandler(async (event) => {
+  const userId = requireUserId(event);
   const query = getQuery(event);
   const taxYearId = query['taxYearId'] as string;
   if (!taxYearId) {
     throw createError({ statusCode: 400, statusMessage: 'taxYearId is required' });
   }
 
-  const snap = await expenseEntriesCol(TEST_USER_ID, taxYearId).orderBy('date', 'desc').get();
+  const snap = await expenseEntriesCol(userId, taxYearId).orderBy('date', 'desc').get();
   const entries = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
   const groupMap = new Map<string, { entries: unknown[]; total: number }>();

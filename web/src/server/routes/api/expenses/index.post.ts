@@ -3,10 +3,11 @@ import { expenseEntriesCol } from '@can-tax-pro/db';
 import { createExpenseEntrySchema, computeAmountCad } from '@can-tax-pro/utils';
 import { Currency } from '@can-tax-pro/types';
 import { FieldValue } from 'firebase-admin/firestore';
+import { requireUserId } from '../../../lib/require-auth';
 
-const TEST_USER_ID = 'test-user';
 
 export default defineEventHandler(async (event) => {
+  const userId = requireUserId(event);
   const query = getQuery(event);
   const taxYearId = query['taxYearId'] as string;
   if (!taxYearId) {
@@ -23,7 +24,7 @@ export default defineEventHandler(async (event) => {
   const currency = data.currency || Currency.CAD;
   const amountCad = computeAmountCad(data.amount, currency, data.exchangeRate);
 
-  const docRef = await expenseEntriesCol(TEST_USER_ID, taxYearId).add({
+  const docRef = await expenseEntriesCol(userId, taxYearId).add({
     category: data.category,
     vendor: data.vendor || null,
     description: data.description || null,
