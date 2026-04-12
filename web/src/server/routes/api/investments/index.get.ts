@@ -1,9 +1,10 @@
 import { defineEventHandler, getQuery, createError } from 'h3';
 import { investmentsCol } from '@can-tax-pro/db';
+import { requireUserId } from '../../../lib/require-auth';
 
-const TEST_USER_ID = 'test-user';
 
 export default defineEventHandler(async (event) => {
+  const userId = requireUserId(event);
   const query = getQuery(event);
   const taxYearId = query['taxYearId'] as string;
   if (!taxYearId) {
@@ -11,9 +12,9 @@ export default defineEventHandler(async (event) => {
   }
 
   const accountType = query['accountType'] as string;
-  let ref = investmentsCol(TEST_USER_ID, taxYearId).orderBy('date', 'desc');
+  let ref = investmentsCol(userId, taxYearId).orderBy('date', 'desc');
   if (accountType) {
-    ref = investmentsCol(TEST_USER_ID, taxYearId)
+    ref = investmentsCol(userId, taxYearId)
       .where('accountType', '==', accountType)
       .orderBy('date', 'desc');
   }

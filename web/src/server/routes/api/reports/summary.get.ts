@@ -10,27 +10,28 @@ import {
 } from '@can-tax-pro/db';
 import { IncomeSourceType, InvestmentAccountType } from '@can-tax-pro/types';
 import { estimateFederalTax } from '@can-tax-pro/utils';
+import { requireUserId } from '../../../lib/require-auth';
 
-const TEST_USER_ID = 'test-user';
 
 export default defineEventHandler(async (event) => {
+  const userId = requireUserId(event);
   const query = getQuery(event);
   const taxYearId = query['taxYearId'] as string;
   if (!taxYearId) {
     throw createError({ statusCode: 400, statusMessage: 'taxYearId is required' });
   }
 
-  const taxYearDoc = await taxYearsCol(TEST_USER_ID).doc(taxYearId).get();
+  const taxYearDoc = await taxYearsCol(userId).doc(taxYearId).get();
   if (!taxYearDoc.exists) {
     throw createError({ statusCode: 404, statusMessage: 'Tax year not found' });
   }
   const taxYearData = taxYearDoc.data();
 
   const [incomeSnap, expenseSnap, propsSnap, investSnap] = await Promise.all([
-    incomeEntriesCol(TEST_USER_ID, taxYearId).get(),
-    expenseEntriesCol(TEST_USER_ID, taxYearId).get(),
-    rentalPropertiesCol(TEST_USER_ID, taxYearId).get(),
-    investmentsCol(TEST_USER_ID, taxYearId).get(),
+    incomeEntriesCol(userId, taxYearId).get(),
+    expenseEntriesCol(userId, taxYearId).get(),
+    rentalPropertiesCol(userId, taxYearId).get(),
+    investmentsCol(userId, taxYearId).get(),
   ]);
 
   // Business income
@@ -54,8 +55,8 @@ export default defineEventHandler(async (event) => {
   let totalRentalExpenses = 0;
   for (const prop of propsSnap.docs) {
     const [rIncSnap, rExpSnap] = await Promise.all([
-      rentalIncomesCol(TEST_USER_ID, taxYearId, prop.id).get(),
-      rentalExpensesCol(TEST_USER_ID, taxYearId, prop.id).get(),
+      rentalIncomesCol(userId, taxYearId, prop.id).get(),
+      rentalExpensesCol(userId, taxYearId, prop.id).get(),
     ]);
     for (const d of rIncSnap.docs) totalRentalIncome += d.data()['amount'] ?? 0;
     for (const d of rExpSnap.docs) totalRentalExpenses += d.data()['amount'] ?? 0;
