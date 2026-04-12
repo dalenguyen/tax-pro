@@ -8,7 +8,7 @@ function getOrInitApp() {
     const serviceAccount = JSON.parse(serviceAccountJson) as ServiceAccount;
     return initializeApp({ credential: cert(serviceAccount) });
   }
-  return initializeApp();
+  return initializeApp({ projectId: 'cantax-fyi' });
 }
 
 getOrInitApp();

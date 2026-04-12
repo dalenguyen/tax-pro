@@ -1,5 +1,6 @@
 import { initializeApp, type FirebaseApp, getApps } from 'firebase/app';
 import { getAuth, type Auth } from 'firebase/auth';
+import { getFirestore, type Firestore } from 'firebase/firestore';
 
 /**
  * Lazy browser-side Firebase init. Safe to import from SSR because the
@@ -8,6 +9,7 @@ import { getAuth, type Auth } from 'firebase/auth';
  */
 let app: FirebaseApp | null = null;
 let auth: Auth | null = null;
+let firestore: Firestore | null = null;
 
 function config() {
   const env = import.meta.env as Record<string, string | undefined>;
@@ -22,12 +24,23 @@ function config() {
   };
 }
 
-export function getClientAuth(): Auth {
+function getClientApp(): FirebaseApp {
   if (!app) {
     app = getApps()[0] ?? initializeApp(config());
   }
+  return app;
+}
+
+export function getClientAuth(): Auth {
   if (!auth) {
-    auth = getAuth(app);
+    auth = getAuth(getClientApp());
   }
   return auth;
+}
+
+export function getClientFirestore(): Firestore {
+  if (!firestore) {
+    firestore = getFirestore(getClientApp());
+  }
+  return firestore;
 }

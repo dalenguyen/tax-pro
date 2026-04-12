@@ -14,7 +14,7 @@ function initFirebase() {
     return initializeApp({ credential: cert(serviceAccount) });
   }
 
-  return initializeApp();
+  return initializeApp({ projectId: 'cantax-fyi' });
 }
 
 const app = initFirebase();

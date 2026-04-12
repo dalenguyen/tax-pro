@@ -10,7 +10,8 @@ import {
   updateProfile,
   type User as FirebaseUser,
 } from 'firebase/auth';
-import { getClientAuth } from './firebase-client';
+import { getClientAuth, getClientFirestore } from './firebase-client';
+import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 
 export interface CurrentUser {
   uid: string;
@@ -50,13 +51,21 @@ export class AuthService {
     const auth = getClientAuth();
     const provider = new GoogleAuthProvider();
     const cred = await signInWithPopup(auth, provider);
-    // Ensure user doc exists (idempotent — safe to call on every login).
-    const token = await cred.user.getIdToken();
-    await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ email: cred.user.email, displayName: cred.user.displayName }),
-    });
+    await this.ensureUserDoc(cred.user);
+  }
+
+  private async ensureUserDoc(user: FirebaseUser): Promise<void> {
+    const db = getClientFirestore();
+    const ref = doc(db, 'users', user.uid);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) {
+      await setDoc(ref, {
+        email: user.email,
+        displayName: user.displayName,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+    }
   }
 
   async login(email: string, password: string): Promise<void> {
