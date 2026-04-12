@@ -1,5 +1,8 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { authGuard } from '../services/auth.guard';
+
+export const routeMeta = { canActivate: [authGuard] };
 
 @Component({
   selector: 'app-home',
