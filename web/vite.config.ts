@@ -19,7 +19,16 @@ export default defineConfig(({ mode }) => {
         allow: ['.'],
       },
     },
-    plugins: [analog(), nxViteTsPaths()],
+    plugins: [
+      analog({
+        nitro: {
+          // Use node-server preset in production so Cloud Run gets a proper
+          // Node.js HTTP server. Local dev / test keep the default preset.
+          preset: mode === 'production' ? 'node-server' : undefined,
+        },
+      }),
+      nxViteTsPaths(),
+    ],
     test: {
       globals: true,
       environment: 'jsdom',

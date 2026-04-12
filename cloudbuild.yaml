@@ -1,0 +1,51 @@
+steps:
+  # Install deps
+  - name: 'node:22-alpine'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - 'corepack enable && corepack prepare pnpm@latest --activate && pnpm install --frozen-lockfile'
+
+  # Unit tests
+  - name: 'node:22-alpine'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - 'pnpm exec nx run-many --target=test --all'
+
+  # Build & push image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - '$_AR_REGION-docker.pkg.dev/$PROJECT_ID/$_AR_REPO/web:$COMMIT_SHA'
+      - '-t'
+      - '$_AR_REGION-docker.pkg.dev/$PROJECT_ID/$_AR_REPO/web:latest'
+      - '.'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '--all-tags'
+      - '$_AR_REGION-docker.pkg.dev/$PROJECT_ID/$_AR_REPO/web'
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:alpine'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - '$_SERVICE_NAME'
+      - '--image=$_AR_REGION-docker.pkg.dev/$PROJECT_ID/$_AR_REPO/web:$COMMIT_SHA'
+      - '--region=$_RUN_REGION'
+      - '--platform=managed'
+      - '--quiet'
+
+substitutions:
+  _AR_REGION: northamerica-northeast1
+  _AR_REPO: can-tax-pro
+  _SERVICE_NAME: can-tax-pro-web
+  _RUN_REGION: northamerica-northeast2
+
+options:
+  logging: CLOUD_LOGGING_ONLY
