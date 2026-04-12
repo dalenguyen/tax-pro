@@ -49,7 +49,14 @@ export class AuthService {
   async loginWithGoogle(): Promise<void> {
     const auth = getClientAuth();
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
+    const cred = await signInWithPopup(auth, provider);
+    // Ensure user doc exists (idempotent — safe to call on every login).
+    const token = await cred.user.getIdToken();
+    await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ email: cred.user.email, displayName: cred.user.displayName }),
+    });
   }
 
   async login(email: string, password: string): Promise<void> {
