@@ -3,6 +3,13 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
+export const routeMeta = {
+  title: 'Create Account | Can Tax Pro',
+  meta: [
+    { name: 'description', content: 'Create a free Can Tax Pro account and start organizing your Canadian taxes today.' },
+  ],
+};
+
 @Component({
   selector: 'app-register',
   imports: [FormsModule, RouterLink],

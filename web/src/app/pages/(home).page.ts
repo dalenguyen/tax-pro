@@ -2,7 +2,10 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { authGuard } from '../services/auth.guard';
 
-export const routeMeta = { canActivate: [authGuard] };
+export const routeMeta = {
+  title: 'Can Tax Pro | Canadian Tax Preparation Made Simple',
+  canActivate: [authGuard],
+};
 
 @Component({
   selector: 'app-home',

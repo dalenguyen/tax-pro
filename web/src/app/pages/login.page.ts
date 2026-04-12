@@ -2,6 +2,13 @@ import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/cor
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
+export const routeMeta = {
+  title: 'Log In | Can Tax Pro',
+  meta: [
+    { name: 'description', content: 'Sign in to Can Tax Pro to manage your Canadian tax return.' },
+  ],
+};
+
 @Component({
   selector: 'app-login',
   changeDetection: ChangeDetectionStrategy.OnPush,

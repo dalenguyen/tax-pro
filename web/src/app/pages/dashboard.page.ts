@@ -5,7 +5,7 @@ import { TaxYearService } from '../services/tax-year.service';
 import { ReportService } from '../services/report.service';
 import { authGuard } from '../services/auth.guard';
 
-export const routeMeta = { canActivate: [authGuard] };
+export const routeMeta = { title: 'Dashboard | Can Tax Pro', canActivate: [authGuard] };
 import { TaxSummary, TaxYear } from '@can-tax-pro/types';
 import { PieChartComponent, PieSlice } from '../components/pie-chart.component';
 import { BarChartComponent, BarDatum } from '../components/bar-chart.component';

@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { authGuard } from '../services/auth.guard';
 import { AuthService } from '../services/auth.service';
 
-export const routeMeta = { canActivate: [authGuard] };
+export const routeMeta = { title: 'Settings | Can Tax Pro', canActivate: [authGuard] };
 
 @Component({
   selector: 'app-settings',

@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { authGuard } from '../services/auth.guard';
 
 export const routeMeta = {
+  title: 'Tax Years | Can Tax Pro',
   canActivate: [authGuard],
 };
 
