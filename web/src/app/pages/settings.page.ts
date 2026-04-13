@@ -1,7 +1,10 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { authGuard } from '../services/auth.guard';
 import { AuthService } from '../services/auth.service';
+import { ApiKey } from '@can-tax-pro/types';
 
 export const routeMeta = { title: 'Settings | Can Tax Pro', canActivate: [authGuard] };
 
@@ -45,6 +48,76 @@ export const routeMeta = { title: 'Settings | Can Tax Pro', canActivate: [authGu
           <p class="text-sm text-gray-400 italic">Preferences coming soon.</p>
         </div>
 
+        <!-- MCP API Keys Section -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+          <div class="mb-4">
+            <h2 class="text-lg font-semibold text-gray-900">MCP API Keys</h2>
+            <p class="text-sm text-gray-500 mt-1">
+              Use these keys to let Claude Code access your tax data via the Can Tax Pro MCP server.
+            </p>
+          </div>
+
+          <!-- New key form -->
+          <div class="flex gap-2 mb-4">
+            <input
+              type="text"
+              placeholder="Key name (e.g. My MacBook)"
+              [value]="newKeyName()"
+              (input)="newKeyName.set($any($event.target).value)"
+              class="flex-1 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              (click)="generateKey()"
+              [disabled]="generating() || !newKeyName().trim()"
+              class="bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700 disabled:opacity-50">
+              {{ generating() ? 'Generating…' : 'Generate key' }}
+            </button>
+          </div>
+
+          <!-- Newly created key — shown once -->
+          @if (newPlaintext()) {
+            <div class="bg-green-50 border border-green-200 rounded p-4 mb-4">
+              <p class="text-sm font-medium text-green-800 mb-2">
+                Copy this key now — it won't be shown again.
+              </p>
+              <div class="flex items-center gap-2">
+                <code class="flex-1 text-xs bg-white border border-green-200 rounded px-3 py-2 break-all font-mono">
+                  {{ newPlaintext() }}
+                </code>
+                <button (click)="copyKey()" class="text-xs text-green-700 hover:text-green-900 font-medium whitespace-nowrap">
+                  {{ copied() ? 'Copied!' : 'Copy' }}
+                </button>
+              </div>
+              <p class="text-xs text-green-700 mt-2">
+                Pass it to the MCP server with <code class="font-mono">--apiKey &lt;key&gt;</code>
+              </p>
+            </div>
+          }
+
+          <!-- Existing keys -->
+          @if (keys().length === 0) {
+            <p class="text-sm text-gray-400 italic">No API keys yet.</p>
+          } @else {
+            <ul class="divide-y divide-gray-100">
+              @for (key of keys(); track key.id) {
+                <li class="flex items-center justify-between py-3">
+                  <div>
+                    <p class="text-sm font-medium text-gray-900">{{ key.name }}</p>
+                    <p class="text-xs text-gray-400">
+                      Created {{ formatDate(key.createdAt) }}
+                      @if (key.lastUsedAt) { · Last used {{ formatDate(key.lastUsedAt) }} }
+                    </p>
+                  </div>
+                  <button (click)="revokeKey(key.id)"
+                          class="text-xs text-red-600 hover:text-red-800 font-medium ml-4">
+                    Revoke
+                  </button>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+
         <!-- Account Section -->
         <div class="bg-white rounded-lg shadow p-6">
           <h2 class="text-lg font-semibold text-gray-900 mb-4">Account</h2>
@@ -57,6 +130,58 @@ export const routeMeta = { title: 'Settings | Can Tax Pro', canActivate: [authGu
     </div>
   `,
 })
-export default class SettingsComponent {
+export default class SettingsComponent implements OnInit {
   auth = inject(AuthService);
+  private http = inject(HttpClient);
+
+  keys = signal<ApiKey[]>([]);
+  newKeyName = signal('');
+  generating = signal(false);
+  newPlaintext = signal('');
+  copied = signal(false);
+
+  async ngOnInit() {
+    await this.loadKeys();
+  }
+
+  async loadKeys() {
+    const data = await firstValueFrom(this.http.get<ApiKey[]>('/api/api-keys'));
+    this.keys.set(data ?? []);
+  }
+
+  async generateKey() {
+    if (!this.newKeyName().trim() || this.generating()) return;
+    this.generating.set(true);
+    this.newPlaintext.set('');
+    try {
+      const res = await firstValueFrom(
+        this.http.post<{ id: string; name: string; plaintext: string }>('/api/api-keys', {
+          name: this.newKeyName().trim(),
+        })
+      );
+      this.newPlaintext.set(res.plaintext);
+      this.newKeyName.set('');
+      await this.loadKeys();
+    } finally {
+      this.generating.set(false);
+    }
+  }
+
+  async revokeKey(id: string) {
+    await firstValueFrom(this.http.delete(`/api/api-keys/${id}`));
+    this.keys.update((ks) => ks.filter((k) => k.id !== id));
+    if (this.newPlaintext()) this.newPlaintext.set('');
+  }
+
+  async copyKey() {
+    await navigator.clipboard.writeText(this.newPlaintext());
+    this.copied.set(true);
+    setTimeout(() => this.copied.set(false), 2000);
+  }
+
+  formatDate(val: unknown): string {
+    if (!val) return '';
+    const d = (val as { toDate?: () => Date }).toDate?.() ?? new Date(val as string);
+    return d.toLocaleDateString('en-CA', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
 }
