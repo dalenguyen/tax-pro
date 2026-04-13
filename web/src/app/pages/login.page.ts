@@ -48,7 +48,7 @@ export default class LoginComponent {
     this.loading.set(true);
     try {
       await this.authService.loginWithGoogle();
-      this.router.navigateByUrl('/');
+      this.router.navigateByUrl('/dashboard');
     } catch (err) {
       this.error.set((err as Error).message || 'Login failed');
     } finally {
