@@ -8,7 +8,7 @@ import { Receipt, LinkedType, ExpenseCategoryType, Currency } from '@can-tax-pro
 import {
   ReceiptExtractionReviewComponent,
   ExtractionFormData,
-} from '../../../../components/receipt-extraction-review.component';
+} from '../../../../../components/receipt-extraction-review.component';
 
 type ReceiptWithUrl = Receipt & { downloadUrl: string };
 
