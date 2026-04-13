@@ -1,0 +1,96 @@
+import json
+from datetime import datetime, timezone
+from typing import Optional
+from google.cloud.firestore import Client
+from mcp.server.fastmcp import FastMCP
+
+
+def register_rental_tools(mcp: FastMCP, db: Client, user_id: str):
+
+    def _props_col(tax_year_id: str):
+        return (
+            db.collection("users").document(user_id)
+            .collection("taxYears").document(tax_year_id)
+            .collection("rentalProperties")
+        )
+
+    def _incomes_col(tax_year_id: str, property_id: str):
+        return _props_col(tax_year_id).document(property_id).collection("rentalIncomes")
+
+    def _expenses_col(tax_year_id: str, property_id: str):
+        return _props_col(tax_year_id).document(property_id).collection("rentalExpenses")
+
+    @mcp.tool()
+    def list_rental_properties(tax_year_id: str) -> str:
+        """List all rental properties for a tax year."""
+        docs = _props_col(tax_year_id).stream()
+        return json.dumps([{"id": d.id, **d.to_dict()} for d in docs], default=str)
+
+    @mcp.tool()
+    def create_rental_property(tax_year_id: str, address: str) -> str:
+        """Add a new rental property for a tax year."""
+        now = datetime.now(timezone.utc)
+        ref = _props_col(tax_year_id).document()
+        ref.set({"address": address, "createdAt": now, "updatedAt": now})
+        doc = ref.get()
+        return json.dumps({"id": doc.id, **doc.to_dict()}, default=str)
+
+    @mcp.tool()
+    def list_rental_income(tax_year_id: str, property_id: str) -> str:
+        """List all rental income entries for a property."""
+        docs = _incomes_col(tax_year_id, property_id).order_by("date", direction="DESCENDING").stream()
+        return json.dumps([{"id": d.id, **d.to_dict()} for d in docs], default=str)
+
+    @mcp.tool()
+    def add_rental_income(
+        tax_year_id: str,
+        property_id: str,
+        amount: float,
+        date: str,
+        description: Optional[str] = None,
+    ) -> str:
+        """Record rental income for a property. date: YYYY-MM-DD"""
+        now = datetime.now(timezone.utc)
+        data = {
+            "amount": amount,
+            "date": datetime.fromisoformat(date),
+            "description": description,
+            "createdAt": now,
+            "updatedAt": now,
+        }
+        ref = _incomes_col(tax_year_id, property_id).document()
+        ref.set({k: v for k, v in data.items() if v is not None})
+        doc = ref.get()
+        return json.dumps({"id": doc.id, **doc.to_dict()}, default=str)
+
+    @mcp.tool()
+    def list_rental_expenses(tax_year_id: str, property_id: str, category: Optional[str] = None) -> str:
+        """List rental expenses for a property. category: WATER | PROPERTY_TAX | INSURANCE | MORTGAGE | LAWYER | RENOVATION | HYDRO | OTHER"""
+        q = _expenses_col(tax_year_id, property_id).order_by("date", direction="DESCENDING")
+        if category:
+            q = q.where("category", "==", category)
+        return json.dumps([{"id": d.id, **d.to_dict()} for d in q.stream()], default=str)
+
+    @mcp.tool()
+    def add_rental_expense(
+        tax_year_id: str,
+        property_id: str,
+        category: str,
+        amount: float,
+        date: str,
+        description: Optional[str] = None,
+    ) -> str:
+        """Record a rental expense for a property. date: YYYY-MM-DD. category: WATER | PROPERTY_TAX | INSURANCE | MORTGAGE | LAWYER | RENOVATION | HYDRO | OTHER"""
+        now = datetime.now(timezone.utc)
+        data = {
+            "category": category,
+            "amount": amount,
+            "date": datetime.fromisoformat(date),
+            "description": description,
+            "createdAt": now,
+            "updatedAt": now,
+        }
+        ref = _expenses_col(tax_year_id, property_id).document()
+        ref.set({k: v for k, v in data.items() if v is not None})
+        doc = ref.get()
+        return json.dumps({"id": doc.id, **doc.to_dict()}, default=str)

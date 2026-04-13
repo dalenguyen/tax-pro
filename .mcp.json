@@ -1,8 +1,10 @@
 {
   "mcpServers": {
     "can-tax-pro": {
-      "command": "pnpm",
-      "args": ["tsx", "--tsconfig", "tools/tax-mcp/tsconfig.json", "tools/tax-mcp/src/main.ts", "--apiKey", "REPLACE_WITH_YOUR_MCP_API_KEY"]
+      "url": "https://mcp.cantax.fyi/mcp",
+      "headers": {
+        "X-API-Key": "REPLACE_WITH_YOUR_MCP_API_KEY"
+      }
     }
   }
 }
