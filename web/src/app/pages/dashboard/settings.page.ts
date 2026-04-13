@@ -2,11 +2,10 @@ import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@ang
 import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { authGuard } from '../services/auth.guard';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { ApiKey } from '@can-tax-pro/types';
 
-export const routeMeta = { title: 'Settings | Can Tax Pro', canActivate: [authGuard] };
+export const routeMeta = { title: 'Settings | Can Tax Pro' };
 
 @Component({
   selector: 'app-settings',
