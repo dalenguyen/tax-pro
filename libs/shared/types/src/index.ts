@@ -1,3 +1,4 @@
+export * from './lib/api-key';
 export * from './lib/enums';
 export * from './lib/user';
 export * from './lib/tax-year';

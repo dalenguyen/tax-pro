@@ -1,0 +1,21 @@
+[project]
+name = "can-tax-pro-mcp"
+version = "0.1.0"
+description = "MCP server for Can Tax Pro — Canadian tax tracking"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp[cli]>=1.6.0",
+    "firebase-admin>=6.5.0",
+    "starlette>=0.46.0",
+    "uvicorn>=0.34.0",
+]
+
+[project.scripts]
+can-tax-pro-mcp = "main:run"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["tools", "main.py"]

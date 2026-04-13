@@ -55,20 +55,17 @@ MCP (Model Context Protocol) server for [Can Tax Pro](../../README.md). Lets Cla
 
 - Node.js 22+
 - pnpm (or npx once published)
-- Firebase project with Firestore enabled
-- Authentication — one of:
-  - **ADC** (recommended for local dev): `gcloud auth application-default login`
-  - **Service account**: set `FIREBASE_SERVICE_ACCOUNT` env var to the JSON key
+- A Can Tax Pro account at [cantax.fyi](https://cantax.fyi)
 
 ## Setup
 
-### 1. Find your Firebase UID
+### 1. Generate an API key
 
-Firebase Console → Authentication → Users → copy the User UID for your account.
+Log in → **Settings → MCP API Keys → Generate key**. Copy the key — it's shown only once.
 
 ### 2. Configure Claude Code
 
-Add `.mcp.json` at your project root (already included in this repo):
+Add or update `.mcp.json` at your project root:
 
 ```json
 {
@@ -79,24 +76,20 @@ Add `.mcp.json` at your project root (already included in this repo):
         "tsx",
         "--tsconfig", "tools/tax-mcp/tsconfig.json",
         "tools/tax-mcp/src/main.ts",
-        "--userId", "<YOUR_FIREBASE_UID>"
+        "--apiKey", "<YOUR_MCP_API_KEY>"
       ]
     }
   }
 }
 ```
 
-Replace `<YOUR_FIREBASE_UID>` with your actual UID.
-
-### 3. Authenticate
-
-```bash
-gcloud auth application-default login
-```
-
-### 4. Restart Claude Code
+### 3. Restart Claude Code
 
 Run `/mcp` — you should see `can-tax-pro` listed with 18 tools.
+
+### Revoking a key
+
+Settings → MCP API Keys → **Revoke** next to the key. The MCP server will immediately return an error for that key.
 
 ## Usage Examples
 
@@ -118,15 +111,15 @@ List all PENDING receipts for tax year <id>
 
 ```bash
 # Start the server manually (stdio)
-pnpm tsx --tsconfig tools/tax-mcp/tsconfig.json tools/tax-mcp/src/main.ts --userId <uid>
+pnpm tsx --tsconfig tools/tax-mcp/tsconfig.json tools/tax-mcp/src/main.ts --apiKey <key>
 
 # Test: list all tools
 echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | \
-  pnpm tsx --tsconfig tools/tax-mcp/tsconfig.json tools/tax-mcp/src/main.ts --userId <uid>
+  pnpm tsx --tsconfig tools/tax-mcp/tsconfig.json tools/tax-mcp/src/main.ts --apiKey <key>
 
 # Test: call a tool
 printf '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"list_tax_years","arguments":{}}}\n' | \
-  pnpm tsx --tsconfig tools/tax-mcp/tsconfig.json tools/tax-mcp/src/main.ts --userId <uid>
+  pnpm tsx --tsconfig tools/tax-mcp/tsconfig.json tools/tax-mcp/src/main.ts --apiKey <key>
 ```
 
 ## Publishing to npm
@@ -148,7 +141,7 @@ After publishing, users will be able to use:
   "mcpServers": {
     "can-tax-pro": {
       "command": "npx",
-      "args": ["@can-tax-pro/tax-mcp", "--userId", "<uid>", "--projectId", "<firebase-project-id>"]
+      "args": ["@can-tax-pro/tax-mcp", "--apiKey", "<key-from-settings>"]
     }
   }
 }

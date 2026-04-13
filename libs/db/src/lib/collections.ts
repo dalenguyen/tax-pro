@@ -43,3 +43,8 @@ export const receiptsCol = (userId: string, taxYearId: string) =>
   taxYearDoc(userId, taxYearId).collection('receipts');
 export const receiptDoc = (userId: string, taxYearId: string, receiptId: string) =>
   receiptsCol(userId, taxYearId).doc(receiptId);
+
+// API keys — root-level collection keyed by sha256(plaintext)
+// so we can look up userId without knowing it first
+export const apiKeysCol = () => db.collection('apiKeys');
+export const apiKeyDoc = (keyHash: string) => apiKeysCol().doc(keyHash);
