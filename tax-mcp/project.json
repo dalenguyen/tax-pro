@@ -1,0 +1,14 @@
+{
+  "name": "tax-mcp",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "tags": ["scope:app", "type:mcp"],
+  "targets": {
+    "deploy": {
+      "command": "gcloud run deploy tax-mcp --source tax-mcp --region us-central1 --quiet",
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    }
+  }
+}
