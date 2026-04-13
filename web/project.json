@@ -62,6 +62,12 @@
       "options": {
         "config": "vite.config.ts"
       }
+    },
+    "deploy": {
+      "command": "gcloud run deploy can-tax-pro-web --source . --region us-central1 --quiet",
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
     }
   }
 }
