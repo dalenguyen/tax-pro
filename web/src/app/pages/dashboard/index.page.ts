@@ -1,15 +1,14 @@
 import { Component, inject, OnInit, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
-import { TaxYearService } from '../services/tax-year.service';
-import { ReportService } from '../services/report.service';
-import { authGuard } from '../services/auth.guard';
-
-export const routeMeta = { title: 'Dashboard | Can Tax Pro', canActivate: [authGuard] };
+import { TaxYearService } from '../../services/tax-year.service';
+import { ReportService } from '../../services/report.service';
 import { TaxSummary, TaxYear } from '@can-tax-pro/types';
-import { PieChartComponent, PieSlice } from '../components/pie-chart.component';
-import { BarChartComponent, BarDatum } from '../components/bar-chart.component';
-import { LineChartComponent, LineSeries } from '../components/line-chart.component';
+import { PieChartComponent, PieSlice } from '../../components/pie-chart.component';
+import { BarChartComponent, BarDatum } from '../../components/bar-chart.component';
+import { LineChartComponent, LineSeries } from '../../components/line-chart.component';
+
+export const routeMeta = { title: 'Dashboard | Can Tax Pro' };
 
 interface MonthlyTrend {
   months: { month: string; income: number; expenses: number }[];
@@ -26,7 +25,7 @@ interface MonthlyTrend {
 
         <div class="mb-6 flex items-center gap-4">
           <h2 class="text-xl font-semibold">Tax Years</h2>
-          <a routerLink="/tax-years" class="text-blue-600 hover:text-blue-800 text-sm">
+          <a routerLink="/dashboard/tax-years" class="text-blue-600 hover:text-blue-800 text-sm">
             Manage Tax Years &rarr;
           </a>
         </div>
@@ -36,7 +35,7 @@ interface MonthlyTrend {
         } @else if (taxYearService.taxYears().length === 0) {
           <div class="bg-white rounded-lg shadow p-6 text-center">
             <p class="text-gray-500 mb-4">No tax years yet.</p>
-            <a routerLink="/tax-years"
+            <a routerLink="/dashboard/tax-years"
                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
               Create Tax Year
             </a>
@@ -61,7 +60,7 @@ interface MonthlyTrend {
               <h2 class="text-xl font-semibold text-gray-900">
                 Summary — {{ selectedTaxYear()!.year }}
               </h2>
-              <a [routerLink]="['/tax-years', selectedTaxYear()!.id, 'reports']"
+              <a [routerLink]="['/dashboard/tax-years', selectedTaxYear()!.id, 'reports']"
                  class="text-blue-600 hover:text-blue-800 text-sm">
                 Full Reports &rarr;
               </a>
