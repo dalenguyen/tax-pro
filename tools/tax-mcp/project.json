@@ -1,0 +1,12 @@
+{
+  "name": "tax-mcp",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "tools/tax-mcp/src",
+  "projectType": "application",
+  "tags": ["scope:tools", "type:mcp"],
+  "targets": {
+    "serve": {
+      "command": "pnpm tsx tools/tax-mcp/src/main.ts"
+    }
+  }
+}
