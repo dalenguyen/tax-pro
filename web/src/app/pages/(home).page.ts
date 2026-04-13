@@ -152,7 +152,7 @@ export const routeMeta = {
           </div>
         </div>
 
-        @if (!auth.isAuthenticated()) {
+        @if (auth.ready() && !auth.isAuthenticated()) {
           <div class="text-center mt-14">
             <a routerLink="/register"
                class="inline-block bg-blue-600 text-white font-semibold px-10 py-4 rounded-xl hover:bg-blue-700 transition text-lg shadow">
