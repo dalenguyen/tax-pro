@@ -1,5 +1,4 @@
 import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
@@ -9,15 +8,12 @@ export const routeMeta = { title: 'Settings | Can Tax Pro' };
 
 @Component({
   selector: 'app-settings',
-  imports: [RouterLink],
+  imports: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="min-h-screen bg-gray-50 p-6">
       <div class="max-w-2xl mx-auto">
-        <div class="flex items-center gap-4 mb-6">
-          <a routerLink="/dashboard" class="text-gray-500 hover:text-gray-700 text-sm">&larr; Back</a>
-          <h1 class="text-3xl font-bold text-gray-900">Settings</h1>
-        </div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">Settings</h1>
 
         <!-- Profile Section -->
         <div class="bg-white rounded-lg shadow p-6 mb-6">
@@ -180,7 +176,17 @@ export default class SettingsComponent implements OnInit {
 
   formatDate(val: unknown): string {
     if (!val) return '';
-    const d = (val as { toDate?: () => Date }).toDate?.() ?? new Date(val as string);
+    const ts = val as { _seconds?: number; seconds?: number; toDate?: () => Date };
+    let d: Date;
+    if (typeof ts.toDate === 'function') {
+      d = ts.toDate();
+    } else if (ts._seconds != null) {
+      d = new Date(ts._seconds * 1000);
+    } else if (ts.seconds != null) {
+      d = new Date(ts.seconds * 1000);
+    } else {
+      d = new Date(val as string);
+    }
     return d.toLocaleDateString('en-CA', { year: 'numeric', month: 'short', day: 'numeric' });
   }
 }

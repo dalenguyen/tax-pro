@@ -49,24 +49,11 @@ export const routeMeta = {
         <p class="text-xl text-slate-300 mb-12 max-w-xl mx-auto leading-relaxed">
           Track income, expenses, receipts and generate CRA-ready reports — all in one place.
         </p>
-        @if (auth.ready()) {
-          @if (auth.isAuthenticated()) {
-            <a routerLink="/dashboard"
-               class="inline-block bg-white text-blue-900 font-semibold px-10 py-4 rounded-xl hover:bg-blue-50 transition text-lg shadow-lg">
-              Go to Dashboard &rarr;
-            </a>
-          } @else {
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-              <a routerLink="/register"
-                 class="inline-block bg-blue-500 text-white font-semibold px-10 py-4 rounded-xl hover:bg-blue-400 transition text-lg shadow-lg">
-                Get Started — It's Free
-              </a>
-              <a routerLink="/login"
-                 class="inline-block border border-white/30 text-white font-semibold px-10 py-4 rounded-xl hover:bg-white/10 transition text-lg">
-                Login
-              </a>
-            </div>
-          }
+        @if (auth.ready() && !auth.isAuthenticated()) {
+          <a routerLink="/register"
+             class="inline-block bg-blue-500 text-white font-semibold px-10 py-4 rounded-xl hover:bg-blue-400 transition text-lg shadow-lg">
+            Get Started — It's Free
+          </a>
         }
       </div>
     </section>
