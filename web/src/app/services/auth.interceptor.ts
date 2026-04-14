@@ -1,7 +1,7 @@
 import { inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import type { HttpInterceptorFn } from '@angular/common/http';
-import { from, switchMap, EMPTY } from 'rxjs';
+import { HttpInterceptorFn, HttpResponse } from '@angular/common/http';
+import { from, switchMap, of } from 'rxjs';
 import { AuthService } from './auth.service';
 
 /**
@@ -19,10 +19,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
-  // During SSR there is no Firebase user — skip the request entirely
-  // so components just render empty; the browser will re-fetch with auth.
+  // During SSR there is no Firebase user — return an empty response so
+  // firstValueFrom resolves with null/[] rather than throwing EmptyError.
   if (!isPlatformBrowser(inject(PLATFORM_ID))) {
-    return EMPTY;
+    return of(new HttpResponse({ status: 200, body: null }));
   }
 
   const auth = inject(AuthService);

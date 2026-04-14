@@ -44,8 +44,9 @@ export class AuthService {
 
   async getIdToken(): Promise<string | null> {
     if (!isPlatformBrowser(this.platformId)) return null;
-    const user = getClientAuth().currentUser;
-    return user ? user.getIdToken() : null;
+    const auth = getClientAuth();
+    await auth.authStateReady();
+    return auth.currentUser ? auth.currentUser.getIdToken() : null;
   }
 
   async loginWithGoogle(): Promise<void> {
