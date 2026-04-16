@@ -5,8 +5,31 @@
   "projectType": "library",
   "tags": ["scope:libs", "type:mcp"],
   "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "libs/tax-mcp/dist",
+        "main": "libs/tax-mcp/src/main.ts",
+        "tsConfig": "libs/tax-mcp/tsconfig.json",
+        "bundle": true,
+        "format": ["cjs"],
+        "platform": "node",
+        "target": "node22",
+        "minify": false,
+        "sourcemap": false,
+        "deleteOutputPath": true,
+        "generatePackageJson": false,
+        "esbuildOptions": {
+          "outExtension": { ".js": ".js" }
+        }
+      }
+    },
     "serve": {
-      "command": "pnpm tsx libs/tax-mcp/src/main.ts"
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm tsx libs/tax-mcp/src/main.ts"
+      }
     }
   }
 }
