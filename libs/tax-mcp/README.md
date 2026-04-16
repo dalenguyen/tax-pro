@@ -53,8 +53,6 @@ MCP (Model Context Protocol) server for [Can Tax](https://cantax.fyi). Lets Clau
 
 ## Prerequisites
 
-- Node.js 22+
-- pnpm (or npx once published)
 - A Can Tax account at [cantax.fyi](https://cantax.fyi)
 
 ## Setup
@@ -71,8 +69,11 @@ Add or update `.mcp.json` at your project root:
 {
   "mcpServers": {
     "cantax-fyi": {
-      "command": "npx",
-      "args": ["@cantax-fyi/tax-mcp", "--apiKey", "<YOUR_MCP_API_KEY>"]
+      "type": "streamable-http",
+      "url": "https://tax-mcp-371544889573.us-central1.run.app/mcp",
+      "headers": {
+        "x-api-key": "<YOUR_MCP_API_KEY>"
+      }
     }
   }
 }
