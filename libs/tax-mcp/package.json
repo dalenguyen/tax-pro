@@ -9,7 +9,8 @@
     "cantax-fyi-mcp": "dist/main.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.26.0"
