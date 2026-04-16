@@ -2,7 +2,7 @@ import { Component, inject, OnInit, ChangeDetectionStrategy, signal } from '@ang
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 import { ReportService } from '../../../../../services/report.service';
-import { TaxSummary } from '@can-tax-pro/types';
+import { TaxSummary } from '@cantax-fyi/types';
 
 @Component({
   selector: 'app-report-summary',

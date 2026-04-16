@@ -1,8 +1,8 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import { investmentsCol } from '@can-tax-pro/db';
-import { createInvestmentSchema, computeAmountCad } from '@can-tax-pro/utils';
-import { InvestmentAccountType, Currency } from '@can-tax-pro/types';
+import { investmentsCol } from '@cantax-fyi/db';
+import { createInvestmentSchema, computeAmountCad } from '@cantax-fyi/utils';
+import { InvestmentAccountType, Currency } from '@cantax-fyi/types';
 import { FieldValue } from 'firebase-admin/firestore';
 
 export function registerInvestmentTools(server: McpServer, userId: string) {

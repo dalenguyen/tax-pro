@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody, getQuery, getRouterParam, createError } from 'h3';
-import { receiptDoc } from '@can-tax-pro/db';
-import { updateReceiptSchema } from '@can-tax-pro/utils';
+import { receiptDoc } from '@cantax-fyi/db';
+import { updateReceiptSchema } from '@cantax-fyi/utils';
 import { FieldValue } from 'firebase-admin/firestore';
 import { requireUserId } from '../../../lib/require-auth';
 

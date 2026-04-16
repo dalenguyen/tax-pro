@@ -1,6 +1,6 @@
 import { defineEventHandler, getQuery, createError } from 'h3';
-import { incomeEntriesCol, expenseEntriesCol } from '@can-tax-pro/db';
-import { aggregateMonthlyTotals } from '@can-tax-pro/utils';
+import { incomeEntriesCol, expenseEntriesCol } from '@cantax-fyi/db';
+import { aggregateMonthlyTotals } from '@cantax-fyi/utils';
 
 const TEST_USER_ID = 'test-user';
 

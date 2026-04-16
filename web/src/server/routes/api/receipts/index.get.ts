@@ -1,5 +1,5 @@
 import { defineEventHandler, getQuery, createError } from 'h3';
-import { receiptsCol } from '@can-tax-pro/db';
+import { receiptsCol } from '@cantax-fyi/db';
 import { requireUserId } from '../../../lib/require-auth';
 
 

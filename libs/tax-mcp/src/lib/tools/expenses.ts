@@ -1,8 +1,8 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import { expenseEntriesCol, db } from '@can-tax-pro/db';
-import { createExpenseEntrySchema, computeAmountCad } from '@can-tax-pro/utils';
-import { ExpenseCategoryType, Currency } from '@can-tax-pro/types';
+import { expenseEntriesCol, db } from '@cantax-fyi/db';
+import { createExpenseEntrySchema, computeAmountCad } from '@cantax-fyi/utils';
+import { ExpenseCategoryType, Currency } from '@cantax-fyi/types';
 import { FieldValue } from 'firebase-admin/firestore';
 
 export function registerExpenseTools(server: McpServer, userId: string) {

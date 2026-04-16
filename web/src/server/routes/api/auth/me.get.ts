@@ -1,5 +1,5 @@
 import { defineEventHandler, createError } from 'h3';
-import { userDoc } from '@can-tax-pro/db';
+import { userDoc } from '@cantax-fyi/db';
 import { requireUserId } from '../../../lib/require-auth';
 
 export default defineEventHandler(async (event) => {

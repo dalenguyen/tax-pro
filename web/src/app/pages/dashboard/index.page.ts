@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 import { TaxYearService } from '../../services/tax-year.service';
 import { ReportService } from '../../services/report.service';
-import { TaxSummary, TaxYear } from '@can-tax-pro/types';
+import { TaxSummary, TaxYear } from '@cantax-fyi/types';
 import { PieChartComponent, PieSlice } from '../../components/pie-chart.component';
 import { BarChartComponent, BarDatum } from '../../components/bar-chart.component';
 import { LineChartComponent, LineSeries } from '../../components/line-chart.component';

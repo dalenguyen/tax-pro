@@ -1,5 +1,5 @@
 import { defineEventHandler } from 'h3';
-import { taxYearsCol } from '@can-tax-pro/db';
+import { taxYearsCol } from '@cantax-fyi/db';
 import { requireUserId } from '../../../lib/require-auth';
 
 

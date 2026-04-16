@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { TaxYear, CreateTaxYearDto } from '@can-tax-pro/types';
+import { TaxYear, CreateTaxYearDto } from '@cantax-fyi/types';
 
 @Injectable({ providedIn: 'root' })
 export class TaxYearService {

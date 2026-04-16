@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody, createError } from 'h3';
 import { createHash, randomBytes } from 'node:crypto';
-import { apiKeyDoc } from '@can-tax-pro/db';
+import { apiKeyDoc } from '@cantax-fyi/db';
 import { FieldValue } from 'firebase-admin/firestore';
 import { requireUserId } from '../../../lib/require-auth';
 

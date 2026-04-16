@@ -3,7 +3,7 @@ import { RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DatePipe, DecimalPipe, CurrencyPipe } from '@angular/common';
 import { InvestmentService } from '../../../../../services/investment.service';
-import { InvestmentAccountType } from '@can-tax-pro/types';
+import { InvestmentAccountType } from '@cantax-fyi/types';
 
 @Component({
   selector: 'app-investments-list',

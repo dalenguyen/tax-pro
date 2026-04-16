@@ -1,7 +1,7 @@
 import { defineEventHandler, readBody, getQuery, createError } from 'h3';
-import { incomeEntriesCol } from '@can-tax-pro/db';
-import { createIncomeEntrySchema, computeAmountCad } from '@can-tax-pro/utils';
-import { Currency } from '@can-tax-pro/types';
+import { incomeEntriesCol } from '@cantax-fyi/db';
+import { createIncomeEntrySchema, computeAmountCad } from '@cantax-fyi/utils';
+import { Currency } from '@cantax-fyi/types';
 import { FieldValue } from 'firebase-admin/firestore';
 import { requireUserId } from '../../../lib/require-auth';
 

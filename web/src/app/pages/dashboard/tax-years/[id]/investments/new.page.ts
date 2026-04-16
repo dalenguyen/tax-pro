@@ -2,7 +2,7 @@ import { Component, inject, OnInit, ChangeDetectionStrategy, signal } from '@ang
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { InvestmentService } from '../../../../../services/investment.service';
-import { InvestmentAccountType, Currency } from '@can-tax-pro/types';
+import { InvestmentAccountType, Currency } from '@cantax-fyi/types';
 
 @Component({
   selector: 'app-investments-new',

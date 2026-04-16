@@ -1,4 +1,4 @@
-import { Currency } from '@can-tax-pro/types';
+import { Currency } from '@cantax-fyi/types';
 
 export function convertToCAD(amount: number, exchangeRate: number): number {
   return Math.round(amount * exchangeRate * 100) / 100;

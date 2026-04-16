@@ -3,7 +3,7 @@ import { RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ReceiptService } from '../../../../../services/receipt.service';
-import { ReceiptStatus } from '@can-tax-pro/types';
+import { ReceiptStatus } from '@cantax-fyi/types';
 
 @Component({
   selector: 'app-receipts-list',

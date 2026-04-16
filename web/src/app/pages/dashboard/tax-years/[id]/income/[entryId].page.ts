@@ -2,7 +2,7 @@ import { Component, inject, OnInit, ChangeDetectionStrategy, signal } from '@ang
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { IncomeService } from '../../../../../services/income.service';
-import { IncomeSourceType, Currency } from '@can-tax-pro/types';
+import { IncomeSourceType, Currency } from '@cantax-fyi/types';
 
 @Component({
   selector: 'app-income-edit',

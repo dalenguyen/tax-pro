@@ -6,7 +6,7 @@ import {
   InvestmentAccountType,
   LinkedType,
   RentalExpenseCategory,
-} from '@can-tax-pro/types';
+} from '@cantax-fyi/types';
 
 export const createTaxYearSchema = z.object({
   year: z.number().int().min(2000).max(2100),

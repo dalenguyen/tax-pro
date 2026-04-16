@@ -1,6 +1,6 @@
 import { defineEventHandler, getQuery, createError } from 'h3';
-import { expenseEntriesCol } from '@can-tax-pro/db';
-import { ExpenseCategoryType } from '@can-tax-pro/types';
+import { expenseEntriesCol } from '@cantax-fyi/db';
+import { ExpenseCategoryType } from '@cantax-fyi/types';
 import { requireUserId } from '../../../lib/require-auth';
 
 

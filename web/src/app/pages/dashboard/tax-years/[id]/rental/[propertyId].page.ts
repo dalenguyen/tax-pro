@@ -3,7 +3,7 @@ import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { RentalService } from '../../../../../services/rental.service';
-import { RentalIncome, RentalExpense, RentalExpenseCategory } from '@can-tax-pro/types';
+import { RentalIncome, RentalExpense, RentalExpenseCategory } from '@cantax-fyi/types';
 
 @Component({
   selector: 'app-rental-detail',

@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ReceiptService } from '../../../../../services/receipt.service';
 import { ExpenseService } from '../../../../../services/expense.service';
-import { Receipt, LinkedType, ExpenseCategoryType, Currency } from '@can-tax-pro/types';
+import { Receipt, LinkedType, ExpenseCategoryType, Currency } from '@cantax-fyi/types';
 import {
   ReceiptExtractionReviewComponent,
   ExtractionFormData,

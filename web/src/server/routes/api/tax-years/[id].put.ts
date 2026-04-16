@@ -1,5 +1,5 @@
 import { defineEventHandler, readBody, getRouterParam, createError } from 'h3';
-import { taxYearDoc } from '@can-tax-pro/db';
+import { taxYearDoc } from '@cantax-fyi/db';
 import { FieldValue } from 'firebase-admin/firestore';
 import { requireUserId } from '../../../lib/require-auth';
 

@@ -1,5 +1,5 @@
 import { defineEventHandler, getQuery, getRouterParam, createError } from 'h3';
-import { rentalPropertyDoc } from '@can-tax-pro/db';
+import { rentalPropertyDoc } from '@cantax-fyi/db';
 import { requireUserId } from '../../../../lib/require-auth';
 
 

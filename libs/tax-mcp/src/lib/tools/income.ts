@@ -1,8 +1,8 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import { incomeEntriesCol, db } from '@can-tax-pro/db';
-import { createIncomeEntrySchema, computeAmountCad } from '@can-tax-pro/utils';
-import { IncomeSourceType, Currency } from '@can-tax-pro/types';
+import { incomeEntriesCol, db } from '@cantax-fyi/db';
+import { createIncomeEntrySchema, computeAmountCad } from '@cantax-fyi/utils';
+import { IncomeSourceType, Currency } from '@cantax-fyi/types';
 import { FieldValue } from 'firebase-admin/firestore';
 
 export function registerIncomeTools(server: McpServer, userId: string) {

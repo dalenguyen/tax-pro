@@ -8,9 +8,9 @@ import {
   rentalExpensesCol,
   investmentsCol,
   taxYearsCol,
-} from '@can-tax-pro/db';
-import { estimateFederalTax } from '@can-tax-pro/utils';
-import { IncomeSourceType, InvestmentAccountType } from '@can-tax-pro/types';
+} from '@cantax-fyi/db';
+import { estimateFederalTax } from '@cantax-fyi/utils';
+import { IncomeSourceType, InvestmentAccountType } from '@cantax-fyi/types';
 
 export function registerReportTools(server: McpServer, userId: string) {
   server.tool(

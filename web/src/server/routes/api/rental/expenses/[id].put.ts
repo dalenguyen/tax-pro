@@ -1,5 +1,5 @@
 import { defineEventHandler, readBody, getQuery, getRouterParam, createError } from 'h3';
-import { rentalExpenseDoc } from '@can-tax-pro/db';
+import { rentalExpenseDoc } from '@cantax-fyi/db';
 import { FieldValue } from 'firebase-admin/firestore';
 import { requireUserId } from '../../../../lib/require-auth';
 

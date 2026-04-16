@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { apiKeyDoc } from '@can-tax-pro/db';
+import { apiKeyDoc } from '@cantax-fyi/db';
 import { registerTaxYearTools } from './lib/tools/tax-years';
 import { registerIncomeTools } from './lib/tools/income';
 import { registerExpenseTools } from './lib/tools/expenses';

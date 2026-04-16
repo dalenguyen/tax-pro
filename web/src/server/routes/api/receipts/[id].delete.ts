@@ -1,5 +1,5 @@
 import { defineEventHandler, getQuery, getRouterParam, createError } from 'h3';
-import { receiptDoc } from '@can-tax-pro/db';
+import { receiptDoc } from '@cantax-fyi/db';
 import { deleteFile } from '../../../lib/storage';
 import { requireUserId } from '../../../lib/require-auth';
 

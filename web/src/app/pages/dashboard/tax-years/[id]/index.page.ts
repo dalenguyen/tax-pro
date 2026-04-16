@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, ChangeDetectionStrategy, signal } from '@angular/core';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { TaxYearService } from '../../../../services/tax-year.service';
-import { TaxYear } from '@can-tax-pro/types';
+import { TaxYear } from '@cantax-fyi/types';
 
 @Component({
   selector: 'app-tax-year-detail',

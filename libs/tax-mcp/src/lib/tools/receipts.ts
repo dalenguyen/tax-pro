@@ -1,7 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import { receiptsCol, receiptDoc } from '@can-tax-pro/db';
-import { ReceiptStatus } from '@can-tax-pro/types';
+import { receiptsCol, receiptDoc } from '@cantax-fyi/db';
+import { ReceiptStatus } from '@cantax-fyi/types';
 
 export function registerReceiptTools(server: McpServer, userId: string) {
   server.tool(

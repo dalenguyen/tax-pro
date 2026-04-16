@@ -1,7 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import { taxYearsCol } from '@can-tax-pro/db';
-import { createTaxYearSchema } from '@can-tax-pro/utils';
+import { taxYearsCol } from '@cantax-fyi/db';
+import { createTaxYearSchema } from '@cantax-fyi/utils';
 import { FieldValue } from 'firebase-admin/firestore';
 
 export function registerTaxYearTools(server: McpServer, userId: string) {

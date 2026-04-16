@@ -1,5 +1,5 @@
 import { defineEventHandler, getQuery, getRouterParam, createError } from 'h3';
-import { incomeEntryDoc } from '@can-tax-pro/db';
+import { incomeEntryDoc } from '@cantax-fyi/db';
 import { requireUserId } from '../../../lib/require-auth';
 
 

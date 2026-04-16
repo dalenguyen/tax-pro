@@ -3,7 +3,7 @@ import { RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ExpenseService } from '../../../../../services/expense.service';
-import { ExpenseCategoryType } from '@can-tax-pro/types';
+import { ExpenseCategoryType } from '@cantax-fyi/types';
 
 @Component({
   selector: 'app-expense-list',

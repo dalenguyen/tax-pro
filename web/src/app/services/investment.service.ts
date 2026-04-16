@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { InvestmentContribution, CreateInvestmentDto, InvestmentAccountType } from '@can-tax-pro/types';
+import { InvestmentContribution, CreateInvestmentDto, InvestmentAccountType } from '@cantax-fyi/types';
 
 @Injectable({ providedIn: 'root' })
 export class InvestmentService {

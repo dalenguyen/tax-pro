@@ -1,12 +1,12 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import { rentalPropertiesCol, rentalIncomesCol, rentalExpensesCol } from '@can-tax-pro/db';
+import { rentalPropertiesCol, rentalIncomesCol, rentalExpensesCol } from '@cantax-fyi/db';
 import {
   createRentalPropertySchema,
   createRentalIncomeSchema,
   createRentalExpenseSchema,
-} from '@can-tax-pro/utils';
-import { RentalExpenseCategory } from '@can-tax-pro/types';
+} from '@cantax-fyi/utils';
+import { RentalExpenseCategory } from '@cantax-fyi/types';
 import { FieldValue } from 'firebase-admin/firestore';
 
 export function registerRentalTools(server: McpServer, userId: string) {

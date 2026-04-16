@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ExpenseCategoryType, Currency } from '@can-tax-pro/types';
+import { ExpenseCategoryType, Currency } from '@cantax-fyi/types';
 
 export interface ExtractionFormData {
   vendor: string;

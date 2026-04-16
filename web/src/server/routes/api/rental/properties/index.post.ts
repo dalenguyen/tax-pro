@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody, getQuery, createError } from 'h3';
-import { rentalPropertiesCol } from '@can-tax-pro/db';
-import { createRentalPropertySchema } from '@can-tax-pro/utils';
+import { rentalPropertiesCol } from '@cantax-fyi/db';
+import { createRentalPropertySchema } from '@cantax-fyi/utils';
 import { FieldValue } from 'firebase-admin/firestore';
 import { requireUserId } from '../../../../lib/require-auth';
 

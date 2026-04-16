@@ -3,7 +3,7 @@ import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
 import { IncomeService } from '../../../../../services/income.service';
-import { IncomeSourceType, Currency, CreateIncomeEntryDto } from '@can-tax-pro/types';
+import { IncomeSourceType, Currency, CreateIncomeEntryDto } from '@cantax-fyi/types';
 
 interface ParsedRow {
   date: string;

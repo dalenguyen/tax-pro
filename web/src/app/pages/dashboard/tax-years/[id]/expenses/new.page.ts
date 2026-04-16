@@ -2,7 +2,7 @@ import { Component, inject, OnInit, ChangeDetectionStrategy, signal } from '@ang
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ExpenseService } from '../../../../../services/expense.service';
-import { ExpenseCategoryType, Currency } from '@can-tax-pro/types';
+import { ExpenseCategoryType, Currency } from '@cantax-fyi/types';
 
 @Component({
   selector: 'app-expense-new',

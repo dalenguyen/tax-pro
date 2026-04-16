@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { TaxSummary } from '@can-tax-pro/types';
+import { TaxSummary } from '@cantax-fyi/types';
 
 @Injectable({ providedIn: 'root' })
 export class ReportService {

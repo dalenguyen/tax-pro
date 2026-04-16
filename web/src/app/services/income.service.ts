@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { IncomeEntry, CreateIncomeEntryDto } from '@can-tax-pro/types';
+import { IncomeEntry, CreateIncomeEntryDto } from '@cantax-fyi/types';
 
 @Injectable({ providedIn: 'root' })
 export class IncomeService {

@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@ang
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
-import { ApiKey } from '@can-tax-pro/types';
+import { ApiKey } from '@cantax-fyi/types';
 
 export const routeMeta = { title: 'Settings | Can Tax Pro' };
 

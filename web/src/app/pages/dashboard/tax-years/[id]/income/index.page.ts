@@ -3,7 +3,7 @@ import { RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { IncomeService } from '../../../../../services/income.service';
-import { IncomeSourceType } from '@can-tax-pro/types';
+import { IncomeSourceType } from '@cantax-fyi/types';
 
 @Component({
   selector: 'app-income-list',

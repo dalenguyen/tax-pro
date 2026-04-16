@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody, createError } from 'h3';
-import { taxYearsCol } from '@can-tax-pro/db';
-import { createTaxYearSchema } from '@can-tax-pro/utils';
+import { taxYearsCol } from '@cantax-fyi/db';
+import { createTaxYearSchema } from '@cantax-fyi/utils';
 import { FieldValue } from 'firebase-admin/firestore';
 import { requireUserId } from '../../../lib/require-auth';
 

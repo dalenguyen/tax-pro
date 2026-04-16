@@ -7,9 +7,9 @@ import {
   rentalExpensesCol,
   investmentsCol,
   taxYearsCol,
-} from '@can-tax-pro/db';
-import { IncomeSourceType, InvestmentAccountType } from '@can-tax-pro/types';
-import { estimateFederalTax } from '@can-tax-pro/utils';
+} from '@cantax-fyi/db';
+import { IncomeSourceType, InvestmentAccountType } from '@cantax-fyi/types';
+import { estimateFederalTax } from '@cantax-fyi/utils';
 import { requireUserId } from '../../../lib/require-auth';
 
 
