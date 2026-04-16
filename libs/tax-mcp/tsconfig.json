@@ -7,7 +7,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "types": ["node"],
-    "outDir": "../../dist/tools/tax-mcp"
+    "outDir": "dist"
   },
   "include": ["src/**/*.ts"]
 }
