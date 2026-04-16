@@ -1,9 +1,10 @@
 {
   "mcpServers": {
-    "can-tax-pro": {
-      "url": "https://mcp.cantax.fyi/mcp",
+    "cantax-fyi": {
+      "type": "streamable-http",
+      "url": "https://tax-mcp-371544889573.us-central1.run.app/mcp",
       "headers": {
-        "X-API-Key": "REPLACE_WITH_YOUR_MCP_API_KEY"
+        "x-api-key": "<YOUR_MCP_API_KEY>"
       }
     }
   }
