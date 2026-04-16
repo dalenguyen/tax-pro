@@ -71,13 +71,8 @@ Add or update `.mcp.json` at your project root:
 {
   "mcpServers": {
     "can-tax-pro": {
-      "command": "pnpm",
-      "args": [
-        "tsx",
-        "--tsconfig", "tools/tax-mcp/tsconfig.json",
-        "tools/tax-mcp/src/main.ts",
-        "--apiKey", "<YOUR_MCP_API_KEY>"
-      ]
+      "command": "npx",
+      "args": ["@cantax-fyi/tax-mcp", "--apiKey", "<YOUR_MCP_API_KEY>"]
     }
   }
 }
@@ -105,46 +100,6 @@ Import these expenses for tax year <id>:
 Show me a tax summary for 2024
 
 List all PENDING receipts for tax year <id>
-```
-
-## CLI Reference
-
-```bash
-# Start the server manually (stdio)
-pnpm tsx --tsconfig tools/tax-mcp/tsconfig.json tools/tax-mcp/src/main.ts --apiKey <key>
-
-# Test: list all tools
-echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | \
-  pnpm tsx --tsconfig tools/tax-mcp/tsconfig.json tools/tax-mcp/src/main.ts --apiKey <key>
-
-# Test: call a tool
-printf '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"list_tax_years","arguments":{}}}\n' | \
-  pnpm tsx --tsconfig tools/tax-mcp/tsconfig.json tools/tax-mcp/src/main.ts --apiKey <key>
-```
-
-## Publishing to npm
-
-> Not yet published. Planned for a future release.
-
-When ready to publish:
-
-1. Remove `"private": true` from `tools/tax-mcp/package.json`
-2. Add a `bin` field pointing to the compiled entry
-3. Add a build step (esbuild bundle, externalizing `firebase-admin`)
-4. Add `--projectId` arg support so users can point to their own Firebase project
-5. `npm publish --access public`
-
-After publishing, users will be able to use:
-
-```json
-{
-  "mcpServers": {
-    "can-tax-pro": {
-      "command": "npx",
-      "args": ["@can-tax-pro/tax-mcp", "--apiKey", "<key-from-settings>"]
-    }
-  }
-}
 ```
 
 ## Data Model
