@@ -4,9 +4,9 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 export const routeMeta = {
-  title: 'Create Account | Can Tax Pro',
+  title: 'Create Account | Can Tax',
   meta: [
-    { name: 'description', content: 'Create a free Can Tax Pro account and start organizing your Canadian taxes today.' },
+    { name: 'description', content: 'Create a free Can Tax account and start organizing your Canadian taxes today.' },
   ],
 };
 

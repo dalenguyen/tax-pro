@@ -32,7 +32,7 @@ pages/
 
 ### Nav bar (sticky top)
 
-- Left: "Can Tax Pro" logo/wordmark
+- Left: "Can Tax" logo/wordmark
 - Right (unauthenticated): "Login" ghost button + "Get Started" primary button
 - Right (authenticated): "Dashboard →" button
 - Simple shadow on scroll
@@ -66,7 +66,7 @@ pages/
 
 ### Footer (minimal)
 
-- "© 2026 Can Tax Pro. Built for Canadian freelancers."
+- "© 2026 Can Tax. Built for Canadian freelancers."
 
 ## Auth-aware CTA logic
 

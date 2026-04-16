@@ -1,4 +1,4 @@
-# Can Tax Pro
+# Can Tax
 
 Canadian tax tracking for freelancers and self-employed individuals. Track income, expenses, rental properties, and investments to simplify your annual tax return.
 

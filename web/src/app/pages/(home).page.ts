@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 export const routeMeta = {
-  title: 'Can Tax Pro | Canadian Tax Preparation Made Simple',
+  title: 'Can Tax | Canadian Tax Preparation Made Simple',
 };
 
 @Component({
@@ -14,7 +14,7 @@ export const routeMeta = {
     <!-- Nav -->
     <nav class="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur border-b border-gray-200 shadow-sm">
       <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <span class="text-xl font-bold text-blue-600">Can Tax Pro</span>
+        <span class="text-xl font-bold text-blue-600">Can Tax</span>
         @if (auth.ready()) {
           @if (auth.isAuthenticated()) {
             <a routerLink="/dashboard"
@@ -152,7 +152,7 @@ export const routeMeta = {
 
     <!-- Footer -->
     <footer class="py-8 px-6 text-center text-gray-400 text-sm border-t border-gray-200 bg-white">
-      © 2026 Can Tax Pro. Built for Canadian freelancers.
+      © 2026 Can Tax. Built for Canadian freelancers.
     </footer>
   `,
 })

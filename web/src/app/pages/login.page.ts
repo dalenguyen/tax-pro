@@ -3,9 +3,9 @@ import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 export const routeMeta = {
-  title: 'Log In | Can Tax Pro',
+  title: 'Log In | Can Tax',
   meta: [
-    { name: 'description', content: 'Sign in to Can Tax Pro to manage your Canadian tax return.' },
+    { name: 'description', content: 'Sign in to Can Tax to manage your Canadian tax return.' },
   ],
 };
 
@@ -16,7 +16,7 @@ export const routeMeta = {
     <div class="min-h-screen bg-gray-50 flex items-center justify-center p-6">
       <div class="bg-white rounded-lg shadow max-w-md w-full p-8 text-center">
         <h1 class="text-2xl font-bold text-gray-900 mb-2">Log in</h1>
-        <p class="text-gray-500 text-sm mb-8">Sign in to Can Tax Pro</p>
+        <p class="text-gray-500 text-sm mb-8">Sign in to Can Tax</p>
 
         @if (error()) {
           <p class="text-sm text-red-600 mb-4">{{ error() }}</p>

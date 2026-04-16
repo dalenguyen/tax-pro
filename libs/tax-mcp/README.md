@@ -1,6 +1,6 @@
 # @can-tax-pro/tax-mcp
 
-MCP (Model Context Protocol) server for [Can Tax Pro](../../README.md). Lets Claude Code and other MCP-compatible AI assistants read and write your Canadian tax data directly via natural language.
+MCP (Model Context Protocol) server for [Can Tax](https://cantax.fyi). Lets Claude Code and other MCP-compatible AI assistants read and write your Canadian tax data directly via natural language.
 
 ## Tools (18 total)
 
@@ -55,7 +55,7 @@ MCP (Model Context Protocol) server for [Can Tax Pro](../../README.md). Lets Cla
 
 - Node.js 22+
 - pnpm (or npx once published)
-- A Can Tax Pro account at [cantax.fyi](https://cantax.fyi)
+- A Can Tax account at [cantax.fyi](https://cantax.fyi)
 
 ## Setup
 

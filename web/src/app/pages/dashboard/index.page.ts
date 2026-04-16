@@ -8,7 +8,7 @@ import { PieChartComponent, PieSlice } from '../../components/pie-chart.componen
 import { BarChartComponent, BarDatum } from '../../components/bar-chart.component';
 import { LineChartComponent, LineSeries } from '../../components/line-chart.component';
 
-export const routeMeta = { title: 'Dashboard | Can Tax Pro' };
+export const routeMeta = { title: 'Dashboard | Can Tax' };
 
 interface MonthlyTrend {
   months: { month: string; income: number; expenses: number }[];

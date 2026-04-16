@@ -1,7 +1,7 @@
 {
   "name": "@cantax-fyi/tax-mcp",
   "version": "0.1.1",
-  "description": "MCP (Model Context Protocol) server for Can Tax Pro (https://cantax.fyi)",
+  "description": "MCP (Model Context Protocol) server for Can Tax (https://cantax.fyi)",
   "license": "UNLICENSED",
   "type": "commonjs",
   "main": "dist/main.js",

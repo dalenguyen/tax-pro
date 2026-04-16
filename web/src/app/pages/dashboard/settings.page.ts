@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { ApiKey } from '@cantax-fyi/types';
 
-export const routeMeta = { title: 'Settings | Can Tax Pro' };
+export const routeMeta = { title: 'Settings | Can Tax' };
 
 @Component({
   selector: 'app-settings',
@@ -48,7 +48,7 @@ export const routeMeta = { title: 'Settings | Can Tax Pro' };
           <div class="mb-4">
             <h2 class="text-lg font-semibold text-gray-900">MCP API Keys</h2>
             <p class="text-sm text-gray-500 mt-1">
-              Use these keys to let Claude Code access your tax data via the Can Tax Pro MCP server.
+              Use these keys to let Claude Code access your tax data via the Can Tax MCP server.
             </p>
           </div>
 

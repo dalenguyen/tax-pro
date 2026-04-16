@@ -10,7 +10,7 @@ import { AuthService } from '../services/auth.service';
     <nav class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-6">
         <a routerLink="/dashboard" class="text-lg font-bold text-blue-600 tracking-tight">
-          Can Tax Pro
+          Can Tax
         </a>
         <div class="flex items-center gap-4 text-sm">
           <a routerLink="/dashboard"

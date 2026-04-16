@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 export const routeMeta = {
-  title: 'Tax Years | Can Tax Pro',
+  title: 'Tax Years | Can Tax',
 };
 
 @Component({
