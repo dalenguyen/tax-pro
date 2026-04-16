@@ -63,5 +63,15 @@
       "style": "css",
       "unitTestRunner": "vitest"
     }
+  },
+  "release": {
+    "projects": ["tax-mcp-sdk"],
+    "projectsRelationship": "independent",
+    "version": {
+      "conventionalCommits": true
+    },
+    "changelog": {
+      "projectChangelogs": true
+    }
   }
 }
