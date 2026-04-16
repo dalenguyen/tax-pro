@@ -22,3 +22,13 @@
 
 
 <!-- nx configuration end-->
+
+## Publishing @cantax-fyi/tax-mcp to npm
+
+```bash
+# 1. Bump version (patch/minor/major or conventional commits)
+pnpm nx release --projects=tax-mcp-sdk --specifier=patch
+
+# 2. Publish (requires npm 2FA OTP)
+cd libs/tax-mcp && npm publish --access public --otp=<YOUR_OTP>
+```
