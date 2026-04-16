@@ -48,7 +48,12 @@ export const routeMeta = { title: 'Settings | Can Tax' };
           <div class="mb-4">
             <h2 class="text-lg font-semibold text-gray-900">MCP API Keys</h2>
             <p class="text-sm text-gray-500 mt-1">
-              Use these keys to let Claude Code access your tax data via the Can Tax MCP server.
+              Use these keys to connect any MCP-compatible AI client to your tax data via the Can Tax MCP server.
+              <a href="https://www.npmjs.com/package/@cantax-fyi/tax-mcp?activeTab=readme"
+                 target="_blank" rel="noopener noreferrer"
+                 class="text-blue-600 hover:underline">
+                View on npm &rarr;
+              </a>
             </p>
           </div>
 
