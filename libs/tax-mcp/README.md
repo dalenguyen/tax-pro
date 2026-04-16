@@ -1,4 +1,4 @@
-# @can-tax-pro/tax-mcp
+# @cantax-fyi/tax-mcp
 
 MCP (Model Context Protocol) server for [Can Tax](https://cantax.fyi). Lets Claude Code and other MCP-compatible AI assistants read and write your Canadian tax data directly via natural language.
 
@@ -70,7 +70,7 @@ Add or update `.mcp.json` at your project root:
 ```json
 {
   "mcpServers": {
-    "can-tax-pro": {
+    "cantax-fyi": {
       "command": "npx",
       "args": ["@cantax-fyi/tax-mcp", "--apiKey", "<YOUR_MCP_API_KEY>"]
     }
@@ -80,7 +80,7 @@ Add or update `.mcp.json` at your project root:
 
 ### 3. Restart Claude Code
 
-Run `/mcp` — you should see `can-tax-pro` listed with 18 tools.
+Run `/mcp` — you should see `cantax-fyi` listed with 18 tools.
 
 ### Revoking a key
 
