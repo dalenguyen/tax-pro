@@ -1,51 +1,49 @@
-import { createHash } from 'node:crypto';
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+#!/usr/bin/env node
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { apiKeyDoc } from '@cantax-fyi/db';
-import { registerTaxYearTools } from './lib/tools/tax-years';
-import { registerIncomeTools } from './lib/tools/income';
-import { registerExpenseTools } from './lib/tools/expenses';
-import { registerInvestmentTools } from './lib/tools/investments';
-import { registerRentalTools } from './lib/tools/rental';
-import { registerReceiptTools } from './lib/tools/receipts';
-import { registerReportTools } from './lib/tools/reports';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 
-async function resolveUserId(): Promise<string> {
-  const apiKeyFlagIdx = process.argv.indexOf('--apiKey');
-  const apiKey = apiKeyFlagIdx !== -1 ? process.argv[apiKeyFlagIdx + 1] : undefined;
-  if (!apiKey) {
-    process.stderr.write('Error: --apiKey <key> is required\nGenerate one in Settings → MCP API Keys\n');
+const SERVER_URL = 'https://tax-mcp-371544889573.us-central1.run.app/mcp';
+
+function getApiKey(): string {
+  const idx = process.argv.indexOf('--apiKey');
+  const key = idx !== -1 ? process.argv[idx + 1] : undefined;
+  if (!key) {
+    process.stderr.write(
+      'Error: --apiKey <key> is required\nGenerate one at cantax.fyi → Settings → MCP API Keys\n'
+    );
     process.exit(1);
   }
-
-  const hash = createHash('sha256').update(apiKey).digest('hex');
-  const doc = await apiKeyDoc(hash).get();
-  if (!doc.exists) {
-    process.stderr.write('Error: invalid or revoked API key\n');
-    process.exit(1);
-  }
-
-  // Update lastUsedAt in background — don't await
-  apiKeyDoc(hash).update({ lastUsedAt: new Date() }).catch(() => undefined);
-
-  return doc.data()!['userId'] as string;
+  return key;
 }
 
 async function main() {
-  const userId = await resolveUserId();
+  const apiKey = getApiKey();
 
-  const server = new McpServer({ name: 'can-tax-pro', version: '1.0.0' });
+  // Raw transport proxy — no Client/Server handshake here.
+  // Claude Code sends MCP JSON-RPC on stdin; we forward to HTTP and pipe responses back.
+  const http = new StreamableHTTPClientTransport(new URL(SERVER_URL), {
+    requestInit: { headers: { 'X-API-Key': apiKey } },
+  });
 
-  registerTaxYearTools(server, userId);
-  registerIncomeTools(server, userId);
-  registerExpenseTools(server, userId);
-  registerInvestmentTools(server, userId);
-  registerRentalTools(server, userId);
-  registerReceiptTools(server, userId);
-  registerReportTools(server, userId);
+  const stdio = new StdioServerTransport();
 
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
+  // Wire: stdio → HTTP
+  stdio.onmessage = (msg) => http.send(msg);
+  // Wire: HTTP → stdio
+  http.onmessage = (msg) => stdio.send(msg);
+
+  http.onerror = (err) => {
+    process.stderr.write(`MCP error: ${err.message}\n`);
+    process.exit(1);
+  };
+
+  stdio.onerror = (err) => {
+    process.stderr.write(`stdio error: ${err.message}\n`);
+    process.exit(1);
+  };
+
+  await http.start();
+  await stdio.start();
 }
 
 main().catch((err) => {
