@@ -44,6 +44,9 @@ importers:
       '@google-cloud/vertexai':
         specifier: ^1.11.0
         version: 1.11.0(@modelcontextprotocol/sdk@1.26.0(zod@4.3.6))
+      '@modelcontextprotocol/sdk':
+        specifier: ^1.26.0
+        version: 1.26.0(zod@4.3.6)
       '@prisma/adapter-pg':
         specifier: ^7.7.0
         version: 7.7.0
