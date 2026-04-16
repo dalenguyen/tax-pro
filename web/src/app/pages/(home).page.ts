@@ -67,7 +67,7 @@ export const routeMeta = {
         <p class="text-center text-gray-500 mb-14 text-lg">
           Built for Canadian freelancers, contractors, and small business owners.
         </p>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
           <div class="bg-gray-50 rounded-2xl p-6 hover:shadow-md transition">
             <div class="text-3xl mb-4">📊</div>
             <h3 class="text-lg font-semibold text-gray-900 mb-2">Track Income</h3>
@@ -94,6 +94,13 @@ export const routeMeta = {
             <h3 class="text-lg font-semibold text-gray-900 mb-2">Tax Reports</h3>
             <p class="text-gray-500 text-sm leading-relaxed">
               Generate T2125 forms, income statements, and expense breakdowns.
+            </p>
+          </div>
+          <div class="bg-gray-50 rounded-2xl p-6 hover:shadow-md transition">
+            <div class="text-3xl mb-4">🤖</div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">MCP Server</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">
+              Connect any MCP-compatible AI client to your tax data for AI-powered insights.
             </p>
           </div>
         </div>

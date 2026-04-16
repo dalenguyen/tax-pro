@@ -8,25 +8,21 @@ import { AuthService } from '../services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nav class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-6">
-        <a routerLink="/dashboard" class="text-lg font-bold text-blue-600 tracking-tight">
-          Can Tax
-        </a>
-        <div class="flex items-center gap-4 text-sm">
-          <a routerLink="/dashboard"
-             routerLinkActive="text-blue-600 font-medium"
-             [routerLinkActiveOptions]="{ exact: true }"
-             class="text-gray-600 hover:text-gray-900">
-            Dashboard
-          </a>
-          <a routerLink="/dashboard/tax-years"
-             routerLinkActive="text-blue-600 font-medium"
-             class="text-gray-600 hover:text-gray-900">
-            Tax Years
-          </a>
-        </div>
-      </div>
+      <a routerLink="/" class="text-lg font-bold text-blue-600 tracking-tight">
+        Can Tax
+      </a>
       <div class="flex items-center gap-4">
+        <a routerLink="/dashboard"
+           routerLinkActive="text-blue-600 font-medium"
+           [routerLinkActiveOptions]="{ exact: true }"
+           class="text-sm text-gray-600 hover:text-gray-900">
+          Dashboard
+        </a>
+        <a routerLink="/dashboard/tax-years"
+           routerLinkActive="text-blue-600 font-medium"
+           class="text-sm text-gray-600 hover:text-gray-900">
+          Tax Years
+        </a>
         <a routerLink="/dashboard/settings"
            routerLinkActive="text-blue-600 font-medium"
            class="text-sm text-gray-600 hover:text-gray-900">
