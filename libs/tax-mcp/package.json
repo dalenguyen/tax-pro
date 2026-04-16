@@ -1,7 +1,8 @@
 {
   "name": "@cantax-fyi/tax-mcp",
   "version": "0.1.0",
-  "description": "MCP server for cantax.fyi — read and write Canadian tax data via AI",
+  "description": "MCP (Model Context Protocol) server for Can Tax Pro (https://cantax.fyi)",
+  "license": "UNLICENSED",
   "type": "commonjs",
   "main": "dist/main.js",
   "bin": {
