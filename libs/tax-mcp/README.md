@@ -61,9 +61,11 @@ MCP (Model Context Protocol) server for [Can Tax](https://cantax.fyi). Lets Clau
 
 Log in → **Settings → MCP API Keys → Generate key**. Copy the key — it's shown only once.
 
-### 2. Configure Claude Code
+### 2. Configure your MCP client
 
-Add or update `.mcp.json` at your project root:
+**Option A — Streamable HTTP (recommended)**
+
+Supported by Claude Code and any client with native `streamable-http` support. No local install required.
 
 ```json
 {
@@ -79,13 +81,28 @@ Add or update `.mcp.json` at your project root:
 }
 ```
 
-### 3. Restart Claude Code
+**Option B — stdio proxy via npx (fallback)**
 
-Run `/mcp` — you should see `cantax-fyi` listed with 18 tools.
+For clients that only support `command`-based (stdio) MCP servers. Requires Node.js 22+. The `@cantax-fyi/tax-mcp` package acts as a local stdio↔HTTP proxy that forwards requests to the same Cloud Run server.
+
+```json
+{
+  "mcpServers": {
+    "cantax-fyi": {
+      "command": "npx",
+      "args": ["@cantax-fyi/tax-mcp", "--apiKey", "<YOUR_MCP_API_KEY>"]
+    }
+  }
+}
+```
+
+### 3. Restart your MCP client
+
+Run `/mcp` in Claude Code — you should see `cantax-fyi` listed with 18 tools.
 
 ### Revoking a key
 
-Settings → MCP API Keys → **Revoke** next to the key. The MCP server will immediately return an error for that key.
+Settings → MCP API Keys → **Revoke** next to the key. The server immediately rejects that key.
 
 ## Usage Examples
 
@@ -101,22 +118,6 @@ Import these expenses for tax year <id>:
 Show me a tax summary for 2024
 
 List all PENDING receipts for tax year <id>
-```
-
-## Data Model
-
-All data is scoped per user in Firestore:
-
-```
-users/{userId}/
-  taxYears/{taxYearId}/
-    incomeEntries/
-    expenseEntries/
-    investments/
-    receipts/
-    rentalProperties/{propertyId}/
-      rentalIncomes/
-      rentalExpenses/
 ```
 
 ## Supported Enums
