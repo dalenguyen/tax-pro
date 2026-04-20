@@ -6,10 +6,10 @@ const SERVER_URL = 'https://tax-mcp-371544889573.us-central1.run.app/mcp';
 
 function getApiKey(): string {
   const idx = process.argv.indexOf('--apiKey');
-  const key = idx !== -1 ? process.argv[idx + 1] : undefined;
+  const key = idx !== -1 ? process.argv[idx + 1] : process.env['CANTAX_API_KEY'];
   if (!key) {
     process.stderr.write(
-      'Error: --apiKey <key> is required\nGenerate one at cantax.fyi → Settings → MCP API Keys\n'
+      'Error: --apiKey <key> or CANTAX_API_KEY env var is required\nGenerate one at cantax.fyi → Settings → MCP API Keys\n'
     );
     process.exit(1);
   }
