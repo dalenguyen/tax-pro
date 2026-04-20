@@ -72,6 +72,29 @@ def register_rental_tools(mcp: FastMCP, db: Client, user_id: str):
         return json.dumps([{"id": d.id, **d.to_dict()} for d in q.stream()], default=str)
 
     @mcp.tool()
+    def delete_rental_property(tax_year_id: str, property_id: str) -> str:
+        """Delete a rental property and all its income/expense subcollections."""
+        prop_ref = _props_col(tax_year_id).document(property_id)
+        for inc in _incomes_col(tax_year_id, property_id).stream():
+            inc.reference.delete()
+        for exp in _expenses_col(tax_year_id, property_id).stream():
+            exp.reference.delete()
+        prop_ref.delete()
+        return json.dumps({"deleted": property_id})
+
+    @mcp.tool()
+    def delete_rental_income(tax_year_id: str, property_id: str, income_id: str) -> str:
+        """Delete a single rental income entry."""
+        _incomes_col(tax_year_id, property_id).document(income_id).delete()
+        return json.dumps({"deleted": income_id})
+
+    @mcp.tool()
+    def delete_rental_expense(tax_year_id: str, property_id: str, expense_id: str) -> str:
+        """Delete a single rental expense entry."""
+        _expenses_col(tax_year_id, property_id).document(expense_id).delete()
+        return json.dumps({"deleted": expense_id})
+
+    @mcp.tool()
     def add_rental_expense(
         tax_year_id: str,
         property_id: str,

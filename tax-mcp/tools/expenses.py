@@ -65,6 +65,12 @@ def register_expense_tools(mcp: FastMCP, db: Client, user_id: str):
         return json.dumps({"id": doc.id, **doc.to_dict()}, default=str)
 
     @mcp.tool()
+    def delete_expense(tax_year_id: str, expense_id: str) -> str:
+        """Delete a single expense entry by ID."""
+        _expense_col(db, user_id, tax_year_id).document(expense_id).delete()
+        return json.dumps({"deleted": expense_id})
+
+    @mcp.tool()
     def bulk_import_expenses(tax_year_id: str, entries: list[dict]) -> str:
         """Batch-import multiple expense entries. Each entry: {category, amount, date, currency?, exchangeRate?, vendor?, description?}"""
         col = _expense_col(db, user_id, tax_year_id)
