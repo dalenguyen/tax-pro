@@ -62,3 +62,9 @@ def register_investment_tools(mcp: FastMCP, db: Client, user_id: str):
         ref.set({k: v for k, v in data.items() if v is not None})
         doc = ref.get()
         return json.dumps({"id": doc.id, **doc.to_dict()}, default=str)
+
+    @mcp.tool()
+    def delete_investment(tax_year_id: str, investment_id: str) -> str:
+        """Delete a single investment contribution by ID."""
+        _col(tax_year_id).document(investment_id).delete()
+        return json.dumps({"deleted": investment_id})

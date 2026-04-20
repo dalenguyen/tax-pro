@@ -31,3 +31,20 @@ def register_tax_year_tools(mcp: FastMCP, db: Client, user_id: str):
         ref.set({"year": year, "notes": notes or None, "createdAt": now, "updatedAt": now})
         doc = ref.get()
         return json.dumps({"id": doc.id, **doc.to_dict()}, default=str)
+
+    @mcp.tool()
+    def delete_tax_year(tax_year_id: str) -> str:
+        """Delete a tax year and all its subcollections (income, expenses, investments, receipts, rental properties)."""
+        year_ref = db.collection("users").document(user_id).collection("taxYears").document(tax_year_id)
+        subcollections = ["incomeEntries", "expenseEntries", "investments", "receipts"]
+        for sub in subcollections:
+            for doc in year_ref.collection(sub).stream():
+                doc.reference.delete()
+        for prop in year_ref.collection("rentalProperties").stream():
+            for inc in prop.reference.collection("rentalIncomes").stream():
+                inc.reference.delete()
+            for exp in prop.reference.collection("rentalExpenses").stream():
+                exp.reference.delete()
+            prop.reference.delete()
+        year_ref.delete()
+        return json.dumps({"deleted": tax_year_id})

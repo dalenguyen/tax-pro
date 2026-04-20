@@ -63,6 +63,12 @@ def register_income_tools(mcp: FastMCP, db: Client, user_id: str):
         return json.dumps({"id": doc.id, **doc.to_dict()}, default=str)
 
     @mcp.tool()
+    def delete_income(tax_year_id: str, income_id: str) -> str:
+        """Delete a single income entry by ID."""
+        _income_col(db, user_id, tax_year_id).document(income_id).delete()
+        return json.dumps({"deleted": income_id})
+
+    @mcp.tool()
     def bulk_import_income(tax_year_id: str, entries: list[dict]) -> str:
         """Batch-import multiple income entries. Each entry: {sourceType, amount, date, currency?, exchangeRate?, description?}"""
         col = _income_col(db, user_id, tax_year_id)
