@@ -85,6 +85,24 @@ Supported by Claude Code and any client with native `streamable-http` support. N
 
 For clients that only support `command`-based (stdio) MCP servers. Requires Node.js 22+. The `@cantax-fyi/tax-mcp` package acts as a local stdio↔HTTP proxy that forwards requests to the same Cloud Run server.
 
+Pass the key via `--apiKey` flag or `CANTAX_API_KEY` environment variable (recommended — keeps the key out of config files):
+
+```json
+{
+  "mcpServers": {
+    "cantax-fyi": {
+      "command": "npx",
+      "args": ["@cantax-fyi/tax-mcp"],
+      "env": {
+        "CANTAX_API_KEY": "<YOUR_MCP_API_KEY>"
+      }
+    }
+  }
+}
+```
+
+Or with the flag directly:
+
 ```json
 {
   "mcpServers": {
@@ -95,6 +113,8 @@ For clients that only support `command`-based (stdio) MCP servers. Requires Node
   }
 }
 ```
+
+> **Note:** If Claude Desktop picks up an older Node.js version, use `"command": "/bin/bash"` with `"args": ["-lc", "npx @cantax-fyi/tax-mcp"]` so your shell profile (and nvm) loads the correct version.
 
 ### 3. Restart your MCP client
 
