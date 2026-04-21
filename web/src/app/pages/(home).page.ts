@@ -27,7 +27,7 @@ export const routeMeta = {
                  class="text-gray-600 hover:text-gray-900 text-sm font-medium transition">
                 Login
               </a>
-              <a routerLink="/register"
+              <a routerLink="/login"
                  class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition">
                 Get Started
               </a>
@@ -50,7 +50,7 @@ export const routeMeta = {
           Track income, expenses, receipts and generate CRA-ready reports — all in one place.
         </p>
         @if (auth.ready() && !auth.isAuthenticated()) {
-          <a routerLink="/register"
+          <a routerLink="/login"
              class="inline-block bg-blue-500 text-white font-semibold px-10 py-4 rounded-xl hover:bg-blue-400 transition text-lg shadow-lg">
             Get Started — It's Free
           </a>
@@ -148,7 +148,7 @@ export const routeMeta = {
 
         @if (auth.ready() && !auth.isAuthenticated()) {
           <div class="text-center mt-14">
-            <a routerLink="/register"
+            <a routerLink="/login"
                class="inline-block bg-blue-600 text-white font-semibold px-10 py-4 rounded-xl hover:bg-blue-700 transition text-lg shadow">
               Get Started — It's Free
             </a>

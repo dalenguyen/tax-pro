@@ -20,5 +20,14 @@ export default defineEventHandler(async (event) => {
   }
 
   const snapshot = await ref.get();
-  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  return snapshot.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      ...data,
+      date: data.date?.toDate?.()?.toISOString() ?? data.date,
+      createdAt: data.createdAt?.toDate?.()?.toISOString() ?? data.createdAt,
+      updatedAt: data.updatedAt?.toDate?.()?.toISOString() ?? data.updatedAt,
+    };
+  });
 });
