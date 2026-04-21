@@ -1,3 +1,14 @@
+## 0.1.11 (2026-04-21)
+
+### 🚀 Features
+
+- **tax-mcp:** support CANTAX_API_KEY env var ([#30](https://github.com/dalenguyen/tax-pro/pull/30), [#29](https://github.com/dalenguyen/tax-pro/issues/29))
+
+### ❤️ Thank You
+
+- Claude Sonnet 4.6
+- Dale Nguyen @dalenguyen
+
 ## 0.1.9 (2026-04-20)
 
 This was a version bump only for tax-mcp-sdk to align it with other projects, there were no code changes.
