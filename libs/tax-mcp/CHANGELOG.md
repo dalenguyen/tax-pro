@@ -1,3 +1,7 @@
+## 0.1.12 (2026-04-21)
+
+This was a version bump only for tax-mcp-sdk to align it with other projects, there were no code changes.
+
 ## 0.1.11 (2026-04-21)
 
 ### 🚀 Features
