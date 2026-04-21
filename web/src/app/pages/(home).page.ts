@@ -14,7 +14,13 @@ export const routeMeta = {
     <!-- Nav -->
     <nav class="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur border-b border-gray-200 shadow-sm">
       <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <span class="text-xl font-bold text-blue-600">Can Tax</span>
+        <a routerLink="/" class="flex items-center gap-2">
+          <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="6" fill="#2563eb"/>
+            <path d="M16 3 L17.5 9.5 L22 8 L19.5 11.5 L24 13.5 L19.5 15 L21.5 21 L16.5 18.5 L16.5 27 L16 25.5 L15.5 27 L15.5 18.5 L10.5 21 L12.5 15 L8 13.5 L12.5 11.5 L10 8 L14.5 9.5 Z" fill="white"/>
+          </svg>
+          <span class="text-lg font-bold text-blue-600 tracking-tight">Can Tax</span>
+        </a>
         @if (auth.ready()) {
           @if (auth.isAuthenticated()) {
             <a routerLink="/dashboard"
