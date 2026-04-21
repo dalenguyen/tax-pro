@@ -9,9 +9,9 @@ export const authGuard: CanActivateFn = () => {
   const platformId = inject(PLATFORM_ID);
   const router = inject(Router);
 
-  // On SSR there is no persistent session — redirect to login.
-  // The browser re-runs the guard after hydration with real Firebase state.
-  if (!isPlatformBrowser(platformId)) return router.createUrlTree(['/login']);
+  // On SSR there is no Firebase session — let the route render (dashboard
+  // layout shows a loading state). The browser guard runs after hydration.
+  if (!isPlatformBrowser(platformId)) return true;
 
   const auth = inject(AuthService);
 
