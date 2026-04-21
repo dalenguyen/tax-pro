@@ -1,0 +1,29 @@
+{
+  "manifest_version": "0.4",
+  "name": "cantax-fyi-tax-mcp",
+  "display_name": "Can Tax MCP",
+  "version": "0.1.12",
+  "description": "Canadian tax research MCP server. Get your API key at https://cantax.fyi → Settings → MCP API Keys",
+  "icon": "icon.png",
+  "author": { "name": "Can Tax" },
+  "server": {
+    "type": "node",
+    "entry_point": "dist/main.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/dist/main.js"],
+      "env": {
+        "CANTAX_API_KEY": "${user_config.api_key}"
+      }
+    }
+  },
+  "user_config": {
+    "api_key": {
+      "type": "string",
+      "title": "API Key",
+      "description": "Can Tax API key — generate at https://cantax.fyi → Settings → MCP API Keys",
+      "sensitive": true,
+      "required": true
+    }
+  }
+}
