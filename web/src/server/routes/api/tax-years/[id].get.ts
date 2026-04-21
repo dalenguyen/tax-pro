@@ -1,6 +1,7 @@
 import { defineEventHandler, getRouterParam, createError } from 'h3';
 import { taxYearDoc } from '@cantax-fyi/db';
 import { requireUserId } from '../../../lib/require-auth';
+import { serializeDoc } from '../../../lib/firestore-serialize';
 
 
 export default defineEventHandler(async (event) => {
@@ -13,5 +14,5 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'Tax year not found' });
   }
 
-  return { id: doc.id, ...doc.data() };
+  return serializeDoc(doc);
 });

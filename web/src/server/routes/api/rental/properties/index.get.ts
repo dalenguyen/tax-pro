@@ -1,6 +1,7 @@
 import { defineEventHandler, getQuery, createError } from 'h3';
 import { rentalPropertiesCol } from '@cantax-fyi/db';
 import { requireUserId } from '../../../../lib/require-auth';
+import { serializeDocs } from '../../../../lib/firestore-serialize';
 
 
 export default defineEventHandler(async (event) => {
@@ -12,5 +13,5 @@ export default defineEventHandler(async (event) => {
   }
 
   const snapshot = await rentalPropertiesCol(userId, taxYearId).orderBy('createdAt', 'desc').get();
-  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  return serializeDocs(snapshot.docs);
 });

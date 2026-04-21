@@ -1,6 +1,7 @@
 import { defineEventHandler, getQuery, createError } from 'h3';
 import { expenseEntriesCol } from '@cantax-fyi/db';
 import { requireUserId } from '../../../lib/require-auth';
+import { serializeDocs } from '../../../lib/firestore-serialize';
 
 
 export default defineEventHandler(async (event) => {
@@ -20,14 +21,5 @@ export default defineEventHandler(async (event) => {
   }
 
   const snapshot = await ref.get();
-  return snapshot.docs.map((doc) => {
-    const data = doc.data();
-    return {
-      id: doc.id,
-      ...data,
-      date: data.date?.toDate?.()?.toISOString() ?? data.date,
-      createdAt: data.createdAt?.toDate?.()?.toISOString() ?? data.createdAt,
-      updatedAt: data.updatedAt?.toDate?.()?.toISOString() ?? data.updatedAt,
-    };
-  });
+  return serializeDocs(snapshot.docs);
 });

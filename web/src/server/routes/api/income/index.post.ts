@@ -4,6 +4,7 @@ import { createIncomeEntrySchema, computeAmountCad } from '@cantax-fyi/utils';
 import { Currency } from '@cantax-fyi/types';
 import { FieldValue } from 'firebase-admin/firestore';
 import { requireUserId } from '../../../lib/require-auth';
+import { serializeDoc } from '../../../lib/firestore-serialize';
 
 
 export default defineEventHandler(async (event) => {
@@ -39,5 +40,5 @@ export default defineEventHandler(async (event) => {
   });
 
   const doc = await docRef.get();
-  return { id: doc.id, ...doc.data() };
+  return serializeDoc(doc);
 });

@@ -3,6 +3,7 @@ import { receiptDoc } from '@cantax-fyi/db';
 import { extractReceiptData } from '../../../../lib/vertex-ai';
 import { FieldValue } from 'firebase-admin/firestore';
 import { requireUserId } from '../../../../lib/require-auth';
+import { serializeDoc } from '../../../../lib/firestore-serialize';
 
 
 export default defineEventHandler(async (event) => {
@@ -40,7 +41,7 @@ export default defineEventHandler(async (event) => {
     });
 
     const updated = await ref.get();
-    return { id: updated.id, ...updated.data(), extracted };
+    return { ...serializeDoc(updated), extracted };
   } catch (error) {
     await ref.update({
       status: 'FAILED',

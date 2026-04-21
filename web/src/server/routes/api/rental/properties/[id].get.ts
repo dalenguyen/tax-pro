@@ -1,6 +1,7 @@
 import { defineEventHandler, getQuery, getRouterParam, createError } from 'h3';
 import { rentalPropertyDoc, rentalIncomesCol, rentalExpensesCol } from '@cantax-fyi/db';
 import { requireUserId } from '../../../../lib/require-auth';
+import { serializeDoc, serializeDocs } from '../../../../lib/firestore-serialize';
 
 
 export default defineEventHandler(async (event) => {
@@ -21,9 +22,8 @@ export default defineEventHandler(async (event) => {
   const expensesSnapshot = await rentalExpensesCol(userId, taxYearId, id).orderBy('date', 'desc').get();
 
   return {
-    id: doc.id,
-    ...doc.data(),
-    incomes: incomesSnapshot.docs.map((d) => ({ id: d.id, ...d.data() })),
-    expenses: expensesSnapshot.docs.map((d) => ({ id: d.id, ...d.data() })),
+    ...serializeDoc(doc),
+    incomes: serializeDocs(incomesSnapshot.docs),
+    expenses: serializeDocs(expensesSnapshot.docs),
   };
 });

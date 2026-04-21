@@ -2,6 +2,7 @@ import { defineEventHandler, getQuery, createError } from 'h3';
 import { expenseEntriesCol } from '@cantax-fyi/db';
 import { ExpenseCategoryType } from '@cantax-fyi/types';
 import { requireUserId } from '../../../lib/require-auth';
+import { serializeDocs } from '../../../lib/firestore-serialize';
 
 
 export default defineEventHandler(async (event) => {
@@ -13,7 +14,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const snap = await expenseEntriesCol(userId, taxYearId).orderBy('date', 'desc').get();
-  const entries = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  const entries = serializeDocs(snap.docs);
 
   const groupMap = new Map<string, { entries: unknown[]; total: number }>();
   for (const cat of Object.values(ExpenseCategoryType)) {

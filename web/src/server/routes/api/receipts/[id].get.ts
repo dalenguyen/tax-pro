@@ -2,6 +2,7 @@ import { defineEventHandler, getQuery, getRouterParam, createError } from 'h3';
 import { receiptDoc } from '@cantax-fyi/db';
 import { generateDownloadUrl } from '../../../lib/storage';
 import { requireUserId } from '../../../lib/require-auth';
+import { serializeDoc } from '../../../lib/firestore-serialize';
 
 
 export default defineEventHandler(async (event) => {
@@ -18,8 +19,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'Receipt not found' });
   }
 
-  const data = doc.data()!;
-  const downloadUrl = await generateDownloadUrl(data['storagePath'] as string);
+  const downloadUrl = await generateDownloadUrl(doc.data()!['storagePath'] as string);
 
-  return { id: doc.id, ...data, downloadUrl };
+  return { ...serializeDoc(doc), downloadUrl };
 });

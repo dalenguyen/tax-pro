@@ -2,6 +2,7 @@ import { defineEventHandler, getQuery, createError } from 'h3';
 import { investmentsCol } from '@cantax-fyi/db';
 import { InvestmentAccountType } from '@cantax-fyi/types';
 import { requireUserId } from '../../../lib/require-auth';
+import { serializeDocs } from '../../../lib/firestore-serialize';
 
 
 export default defineEventHandler(async (event) => {
@@ -13,7 +14,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const snap = await investmentsCol(userId, taxYearId).orderBy('date', 'desc').get();
-  const entries = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  const entries = serializeDocs(snap.docs);
 
   const rrspEntries: unknown[] = [];
   const tfsaEntries: unknown[] = [];

@@ -4,6 +4,7 @@ import { computeAmountCad } from '@cantax-fyi/utils';
 import { Currency } from '@cantax-fyi/types';
 import { FieldValue } from 'firebase-admin/firestore';
 import { requireUserId } from '../../../lib/require-auth';
+import { serializeDoc } from '../../../lib/firestore-serialize';
 
 
 export default defineEventHandler(async (event) => {
@@ -38,5 +39,5 @@ export default defineEventHandler(async (event) => {
 
   await ref.update(updateData);
   const updated = await ref.get();
-  return { id: updated.id, ...updated.data() };
+  return serializeDoc(updated);
 });

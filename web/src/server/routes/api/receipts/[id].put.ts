@@ -3,6 +3,7 @@ import { receiptDoc } from '@cantax-fyi/db';
 import { updateReceiptSchema } from '@cantax-fyi/utils';
 import { FieldValue } from 'firebase-admin/firestore';
 import { requireUserId } from '../../../lib/require-auth';
+import { serializeDoc } from '../../../lib/firestore-serialize';
 
 
 export default defineEventHandler(async (event) => {
@@ -34,5 +35,5 @@ export default defineEventHandler(async (event) => {
 
   await ref.update(updateData);
   const updated = await ref.get();
-  return { id: updated.id, ...updated.data() };
+  return serializeDoc(updated);
 });

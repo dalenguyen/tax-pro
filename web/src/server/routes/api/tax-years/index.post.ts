@@ -3,6 +3,7 @@ import { taxYearsCol } from '@cantax-fyi/db';
 import { createTaxYearSchema } from '@cantax-fyi/utils';
 import { FieldValue } from 'firebase-admin/firestore';
 import { requireUserId } from '../../../lib/require-auth';
+import { serializeDoc } from '../../../lib/firestore-serialize';
 
 
 export default defineEventHandler(async (event) => {
@@ -32,5 +33,5 @@ export default defineEventHandler(async (event) => {
   });
 
   const doc = await docRef.get();
-  return { id: doc.id, ...doc.data() };
+  return serializeDoc(doc);
 });

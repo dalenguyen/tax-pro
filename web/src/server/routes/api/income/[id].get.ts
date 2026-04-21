@@ -1,6 +1,7 @@
 import { defineEventHandler, getQuery, getRouterParam, createError } from 'h3';
 import { incomeEntryDoc } from '@cantax-fyi/db';
 import { requireUserId } from '../../../lib/require-auth';
+import { serializeDoc } from '../../../lib/firestore-serialize';
 
 
 export default defineEventHandler(async (event) => {
@@ -17,5 +18,5 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'Income entry not found' });
   }
 
-  return { id: doc.id, ...doc.data() };
+  return serializeDoc(doc);
 });
