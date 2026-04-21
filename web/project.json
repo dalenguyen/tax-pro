@@ -64,7 +64,7 @@
       }
     },
     "deploy": {
-      "command": "gcloud run deploy can-tax-pro-web --source . --region us-central1 --quiet",
+      "command": "gcloud run deploy can-tax-pro-web --source . --region us-central1 --project cantax-fyi --quiet",
       "options": {
         "cwd": "{workspaceRoot}"
       }

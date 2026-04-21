@@ -5,7 +5,7 @@
   "tags": ["scope:app", "type:mcp"],
   "targets": {
     "deploy": {
-      "command": "gcloud run deploy tax-mcp --source tax-mcp --region us-central1 --quiet",
+      "command": "gcloud run deploy tax-mcp --source tax-mcp --region us-central1 --project cantax-fyi --quiet",
       "options": {
         "cwd": "{workspaceRoot}"
       }

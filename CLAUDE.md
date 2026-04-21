@@ -23,6 +23,14 @@
 
 <!-- nx configuration end-->
 
+## Deploying tax-mcp
+
+Always deploy to GCP project `cantax-fyi`:
+
+```bash
+pnpm nx run tax-mcp:deploy
+```
+
 ## Publishing @cantax-fyi/tax-mcp to npm
 
 ```bash

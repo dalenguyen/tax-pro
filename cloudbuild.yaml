@@ -39,6 +39,7 @@ steps:
       - '--image=$_AR_REGION-docker.pkg.dev/$PROJECT_ID/$_AR_REPO/web:$COMMIT_SHA'
       - '--region=$_RUN_REGION'
       - '--platform=managed'
+      - '--project=cantax-fyi'
       - '--quiet'
 
 substitutions:
