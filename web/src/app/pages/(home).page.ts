@@ -21,14 +21,15 @@ export const routeMeta = {
           </svg>
           <span class="text-lg font-bold text-blue-600 tracking-tight">Can Tax</span>
         </a>
-        @if (auth.ready()) {
-          @if (auth.isAuthenticated()) {
-            <a routerLink="/dashboard"
-               class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition">
-              Dashboard &rarr;
-            </a>
-          } @else {
-            <div class="flex items-center gap-3">
+        <div class="flex items-center gap-6">
+          <a routerLink="/docs" class="text-gray-500 hover:text-gray-900 text-sm font-medium transition">Docs</a>
+          @if (auth.ready()) {
+            @if (auth.isAuthenticated()) {
+              <a routerLink="/dashboard"
+                 class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition">
+                Dashboard &rarr;
+              </a>
+            } @else {
               <a routerLink="/login"
                  class="text-gray-600 hover:text-gray-900 text-sm font-medium transition">
                 Login
@@ -37,9 +38,9 @@ export const routeMeta = {
                  class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition">
                 Get Started
               </a>
-            </div>
+            }
           }
-        }
+        </div>
       </div>
     </nav>
 
@@ -165,6 +166,10 @@ export const routeMeta = {
 
     <!-- Footer -->
     <footer class="py-8 px-6 text-center text-gray-400 text-sm border-t border-gray-200 bg-white">
+      <div class="flex justify-center gap-6 mb-2">
+        <a routerLink="/docs" class="hover:text-gray-600 transition">Docs</a>
+        <a routerLink="/privacy" class="hover:text-gray-600 transition">Privacy Policy</a>
+      </div>
       © 2026 Can Tax. Built for Canadian freelancers.
     </footer>
   `,
