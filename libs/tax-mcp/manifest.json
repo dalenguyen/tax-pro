@@ -1,7 +1,7 @@
 {
   "manifest_version": "0.4",
   "name": "cantax-fyi-tax-mcp",
-  "display_name": "Can Tax MCP",
+  "display_name": "Can Tax",
   "version": "0.1.12",
   "description": "Canadian tax research MCP server. Get your API key at https://cantax.fyi → Settings → MCP API Keys",
   "icon": "icon.png",
