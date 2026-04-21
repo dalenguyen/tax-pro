@@ -5,6 +5,7 @@
   "version": "0.1.12",
   "description": "Canadian tax research MCP server. Get your API key at https://cantax.fyi → Settings → MCP API Keys",
   "icon": "icon.png",
+  "license": "MIT",
   "author": { "name": "Can Tax" },
   "server": {
     "type": "node",
