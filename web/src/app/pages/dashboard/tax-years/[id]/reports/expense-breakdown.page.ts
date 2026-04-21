@@ -47,7 +47,7 @@ interface ExpenseBreakdownData {
                     <span class="font-medium text-gray-700">{{ group.category }}</span>
                     <span class="text-gray-500">
                       \${{ group.total | number:'1.2-2' }}
-                      ({{ data()!.grandTotal > 0 ? group.total / data()!.grandTotal : 0 | percent:'1.1-1' }})
+                      ({{ (data()!.grandTotal > 0 ? group.total / data()!.grandTotal : 0) | percent:'1.1-1' }})
                     </span>
                   </div>
                   <div class="w-full bg-gray-100 rounded-full h-2">
@@ -68,7 +68,7 @@ interface ExpenseBreakdownData {
                   <h2 class="text-base font-semibold text-red-900">{{ group.category }}</h2>
                   <div class="flex items-center gap-3">
                     <span class="text-sm text-red-700">
-                      {{ data()!.grandTotal > 0 ? group.total / data()!.grandTotal : 0 | percent:'1.1-1' }}
+                      {{ (data()!.grandTotal > 0 ? group.total / data()!.grandTotal : 0) | percent:'1.1-1' }}
                     </span>
                     <span class="font-mono font-bold text-red-900">\${{ group.total | number:'1.2-2' }}</span>
                   </div>
