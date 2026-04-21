@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 
 const SERVER_URL = 'https://tax-mcp-371544889573.us-central1.run.app/mcp';
 
@@ -18,23 +17,47 @@ function getApiKey(): string {
 
 async function main() {
   const apiKey = getApiKey();
-
-  // Raw transport proxy — no Client/Server handshake here.
-  // Claude Code sends MCP JSON-RPC on stdin; we forward to HTTP and pipe responses back.
-  const http = new StreamableHTTPClientTransport(new URL(SERVER_URL), {
-    requestInit: { headers: { 'X-API-Key': apiKey } },
-  });
-
   const stdio = new StdioServerTransport();
 
-  // Wire: stdio → HTTP
-  stdio.onmessage = (msg) => http.send(msg);
-  // Wire: HTTP → stdio
-  http.onmessage = (msg) => stdio.send(msg);
+  stdio.onmessage = async (msg) => {
+    try {
+      const res = await fetch(SERVER_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json, text/event-stream',
+          'X-API-Key': apiKey,
+        },
+        body: JSON.stringify(msg),
+      });
 
-  http.onerror = (err) => {
-    process.stderr.write(`MCP error: ${err.message}\n`);
-    process.exit(1);
+      if (!res.ok) {
+        process.stderr.write(`HTTP ${res.status}: ${await res.text()}\n`);
+        return;
+      }
+
+      const contentType = res.headers.get('content-type') ?? '';
+
+      if (contentType.includes('text/event-stream')) {
+        // SSE: read lines and forward each data event
+        const text = await res.text();
+        for (const line of text.split('\n')) {
+          if (line.startsWith('data: ')) {
+            try {
+              const payload = JSON.parse(line.slice(6));
+              await stdio.send(payload);
+            } catch {
+              // skip non-JSON data lines
+            }
+          }
+        }
+      } else {
+        const payload = await res.json();
+        await stdio.send(payload);
+      }
+    } catch (err) {
+      process.stderr.write(`Proxy error: ${err}\n`);
+    }
   };
 
   stdio.onerror = (err) => {
@@ -42,7 +65,6 @@ async function main() {
     process.exit(1);
   };
 
-  await http.start();
   await stdio.start();
 }
 
