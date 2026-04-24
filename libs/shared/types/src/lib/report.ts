@@ -1,5 +1,6 @@
 export interface TaxSummary {
   taxYear: number;
+  employmentIncome: number;
   totalBusinessIncome: number;
   totalBusinessExpenses: number;
   netBusinessIncome: number;

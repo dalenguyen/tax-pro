@@ -36,6 +36,19 @@ import { TaxSummary } from '@cantax-fyi/types';
               <p class="text-gray-500 text-sm mt-1">Income Tax Summary</p>
             </div>
 
+            <!-- Employment Income (T4) -->
+            @if (data()!.employmentIncome > 0) {
+              <section>
+                <h3 class="text-lg font-semibold text-gray-900 border-b pb-2 mb-4">Employment Income (T4)</h3>
+                <div class="space-y-2">
+                  <div class="flex justify-between font-semibold">
+                    <span>Total Employment Income</span>
+                    <span class="font-mono text-green-700">\${{ data()!.employmentIncome | number:'1.2-2' }}</span>
+                  </div>
+                </div>
+              </section>
+            }
+
             <!-- Business Income -->
             <section>
               <h3 class="text-lg font-semibold text-gray-900 border-b pb-2 mb-4">Business Income</h3>

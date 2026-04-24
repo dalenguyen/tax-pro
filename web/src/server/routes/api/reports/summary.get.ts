@@ -34,11 +34,15 @@ export default defineEventHandler(async (event) => {
     investmentsCol(userId, taxYearId).get(),
   ]);
 
+  // Employment (T4) income
+  let employmentIncome = 0;
   // Business income
   let totalBusinessIncome = 0;
   for (const doc of incomeSnap.docs) {
     const d = doc.data();
-    if (d['sourceType'] === IncomeSourceType.INTERNET_BUSINESS || d['sourceType'] === IncomeSourceType.STRIPE) {
+    if (d['sourceType'] === IncomeSourceType.EMPLOYMENT) {
+      employmentIncome += d['amountCad'] ?? d['amount'] ?? 0;
+    } else if (d['sourceType'] === IncomeSourceType.INTERNET_BUSINESS || d['sourceType'] === IncomeSourceType.STRIPE) {
       totalBusinessIncome += d['amountCad'] ?? d['amount'] ?? 0;
     }
   }
@@ -72,12 +76,13 @@ export default defineEventHandler(async (event) => {
     else if (d['accountType'] === InvestmentAccountType.TFSA) tfsaContributions += amt;
   }
 
-  const totalIncome = totalBusinessIncome + totalRentalIncome;
+  const totalIncome = employmentIncome + totalBusinessIncome + totalRentalIncome;
   const totalDeductions = totalBusinessExpenses + rrspContributions;
   const taxableIncome = totalIncome - totalDeductions;
 
   return {
     taxYear: taxYearData?.['year'] ?? 0,
+    employmentIncome,
     totalBusinessIncome,
     totalBusinessExpenses,
     netBusinessIncome: totalBusinessIncome - totalBusinessExpenses,
