@@ -7,6 +7,7 @@ export enum IncomeSourceType {
   RENTAL = 'RENTAL',
   INTERNET_BUSINESS = 'INTERNET_BUSINESS',
   STRIPE = 'STRIPE',
+  EMPLOYMENT = 'EMPLOYMENT',
 }
 
 export enum ExpenseCategoryType {
