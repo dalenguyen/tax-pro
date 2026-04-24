@@ -1,3 +1,19 @@
+## 0.1.13 (2026-04-24)
+
+### 🚀 Features
+
+- **tax-mcp:** add MIT license and dashboard footer ([#42](https://github.com/dalenguyen/tax-pro/pull/42), [#41](https://github.com/dalenguyen/tax-pro/issues/41))
+- **tax-mcp:** add mcpb packaging and raw fetch proxy ([#38](https://github.com/dalenguyen/tax-pro/pull/38))
+
+### 🩹 Fixes
+
+- **tax-mcp:** rename display name to Can Tax ([dcc81ba](https://github.com/dalenguyen/tax-pro/commit/dcc81ba))
+
+### ❤️ Thank You
+
+- Claude Sonnet 4.6
+- Dale Nguyen @dalenguyen
+
 ## 0.1.12 (2026-04-21)
 
 This was a version bump only for tax-mcp-sdk to align it with other projects, there were no code changes.
