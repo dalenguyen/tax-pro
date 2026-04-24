@@ -1,20 +1,17 @@
 import hashlib
 import json
 import os
-from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 
-import anyio
 import firebase_admin
 import uvicorn
 from firebase_admin import credentials, firestore
 from mcp.server.fastmcp import FastMCP
-from mcp.server.streamable_http_manager import TransportSecuritySettings
 from starlette.applications import Starlette
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse
-from starlette.routing import Mount, Route
+from starlette.routing import Route
 
 # ---------------------------------------------------------------------------
 # Firebase — ADC on Cloud Run, service account JSON locally via env var
@@ -25,7 +22,7 @@ if not firebase_admin._apps:
         cred = credentials.Certificate(json.loads(sa_json))
         firebase_admin.initialize_app(cred)
     else:
-        firebase_admin.initialize_app()  # ADC (automatic on Cloud Run)
+        firebase_admin.initialize_app()
 
 db = firestore.client()
 
@@ -43,21 +40,15 @@ def resolve_user_id(api_key: str) -> str:
     return doc.to_dict()["userId"]
 
 # ---------------------------------------------------------------------------
-# MCP server — one per userId, cached
+# MCP server — one per userId, cached in-process
 # ---------------------------------------------------------------------------
 _mcp_cache: dict[str, FastMCP] = {}
-_asgi_cache: dict[str, object] = {}  # user_id -> started ASGI app
-_server_task_group: anyio.abc.TaskGroup | None = None
-
 
 def get_mcp(user_id: str) -> FastMCP:
     if user_id in _mcp_cache:
         return _mcp_cache[user_id]
 
-    mcp = FastMCP(
-        "can-tax-pro",
-        transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=False),
-    )
+    mcp = FastMCP("can-tax-pro")
 
     from tools.tax_years import register_tax_year_tools
     from tools.income import register_income_tools
@@ -78,41 +69,8 @@ def get_mcp(user_id: str) -> FastMCP:
     _mcp_cache[user_id] = mcp
     return mcp
 
-
-async def get_or_start_user_asgi(user_id: str):
-    """Return a running (lifespan-initialized) ASGI app for the user."""
-    if user_id in _asgi_cache:
-        return _asgi_cache[user_id]
-
-    mcp = get_mcp(user_id)
-    asgi = mcp.streamable_http_app()
-
-    startup_complete = anyio.Event()
-    startup_received = False
-
-    async def lifespan_receive():
-        nonlocal startup_received
-        if not startup_received:
-            startup_received = True
-            return {"type": "lifespan.startup"}
-        await anyio.Event().wait()  # block until task group is cancelled
-
-    async def lifespan_send(msg):
-        if msg["type"] == "lifespan.startup.complete":
-            startup_complete.set()
-
-    # Start the lifespan in the server-level task group so it stays alive
-    _server_task_group.start_soon(
-        asgi, {"type": "lifespan", "asgi": {"version": "3.0"}}, lifespan_receive, lifespan_send
-    )
-    await startup_complete.wait()
-
-    _asgi_cache[user_id] = asgi
-    return asgi
-
-
 # ---------------------------------------------------------------------------
-# Auth middleware — extracts X-API-Key, resolves userId
+# Auth middleware
 # ---------------------------------------------------------------------------
 class ApiKeyMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
@@ -130,32 +88,77 @@ class ApiKeyMiddleware(BaseHTTPMiddleware):
 # ---------------------------------------------------------------------------
 # Routes
 # ---------------------------------------------------------------------------
-async def health(_: Request):
+async def health(_: Request) -> JSONResponse:
     return JSONResponse({"status": "ok"})
 
-async def mcp_handler(scope, receive, send):
-    user_id = scope["user_id"]
-    asgi = await get_or_start_user_asgi(user_id)
-    await asgi(scope, receive, send)
+
+async def mcp_rpc(request: Request) -> JSONResponse:
+    user_id = request.scope["user_id"]
+    mcp = get_mcp(user_id)
+
+    body = await request.json()
+    method = body.get("method")
+    id_ = body.get("id")
+    params = body.get("params", {})
+
+    # Notifications have no id — return empty 200
+    if id_ is None:
+        return JSONResponse({})
+
+    if method == "initialize":
+        return JSONResponse({
+            "jsonrpc": "2.0", "id": id_,
+            "result": {
+                "protocolVersion": "2024-11-05",
+                "capabilities": {"tools": {"listChanged": False}},
+                "serverInfo": {"name": "can-tax-pro", "version": "1.0.0"},
+            },
+        })
+
+    if method == "ping":
+        return JSONResponse({"jsonrpc": "2.0", "id": id_, "result": {}})
+
+    if method == "tools/list":
+        tools = await mcp.list_tools()
+        return JSONResponse({
+            "jsonrpc": "2.0", "id": id_,
+            "result": {"tools": [t.model_dump(exclude_none=True, exclude={"outputSchema"}) for t in tools]},
+        })
+
+    if method == "tools/call":
+        name = params.get("name")
+        args = params.get("arguments", {})
+        try:
+            result = await mcp.call_tool(name, args)
+            # call_tool returns (list[ContentBlock], output_dict)
+            content_list = result[0] if isinstance(result, tuple) else result
+            content = [
+                c if isinstance(c, dict) else c.model_dump(exclude_none=True)
+                for c in content_list
+            ]
+            return JSONResponse({
+                "jsonrpc": "2.0", "id": id_,
+                "result": {"content": content, "isError": False},
+            })
+        except Exception as e:
+            return JSONResponse({
+                "jsonrpc": "2.0", "id": id_,
+                "result": {"content": [{"type": "text", "text": str(e)}], "isError": True},
+            })
+
+    return JSONResponse({
+        "jsonrpc": "2.0", "id": id_,
+        "error": {"code": -32601, "message": f"Method not found: {method}"},
+    }, status_code=400)
 
 # ---------------------------------------------------------------------------
 # App
 # ---------------------------------------------------------------------------
-@asynccontextmanager
-async def lifespan(app):
-    global _server_task_group
-    async with anyio.create_task_group() as tg:
-        _server_task_group = tg
-        yield
-        _server_task_group = None
-
-
 app = Starlette(
     routes=[
         Route("/health", health),
-        Mount("/", app=mcp_handler),
+        Route("/mcp", mcp_rpc, methods=["POST"]),
     ],
-    lifespan=lifespan,
 )
 app.add_middleware(ApiKeyMiddleware)
 

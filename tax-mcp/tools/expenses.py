@@ -25,7 +25,7 @@ def register_expense_tools(mcp: FastMCP, db: Client, user_id: str):
 
     @mcp.tool()
     def list_expenses(tax_year_id: str, category: Optional[str] = None) -> str:
-        """List expense entries. category: EMAIL | GCP | NAMECHEAP | PHONE | INTERNET | ADS | HOSTING | OTHER"""
+        """List expense entries. category: EMAIL | GCP | NAMECHEAP | PHONE | INTERNET | ADS | HOSTING | SOFTWARE | OTHER"""
         q = _expense_col(db, user_id, tax_year_id).order_by("date", direction="DESCENDING")
         if category:
             q = q.where("category", "==", category)
@@ -43,7 +43,7 @@ def register_expense_tools(mcp: FastMCP, db: Client, user_id: str):
         description: Optional[str] = None,
         payment_method: Optional[str] = None,
     ) -> str:
-        """Create a single expense entry. date: YYYY-MM-DD. category: EMAIL | GCP | NAMECHEAP | PHONE | INTERNET | ADS | HOSTING | OTHER"""
+        """Create a single expense entry. date: YYYY-MM-DD. category: EMAIL | GCP | NAMECHEAP | PHONE | INTERNET | ADS | HOSTING | SOFTWARE | OTHER"""
         amount_cad = _compute_amount_cad(amount, currency, exchange_rate)
         now = datetime.now(timezone.utc)
         data = {
@@ -71,12 +71,13 @@ def register_expense_tools(mcp: FastMCP, db: Client, user_id: str):
         return json.dumps({"deleted": expense_id})
 
     @mcp.tool()
-    def bulk_import_expenses(tax_year_id: str, entries: list[dict]) -> str:
-        """Batch-import multiple expense entries. Each entry: {category, amount, date, currency?, exchangeRate?, vendor?, description?}"""
+    def bulk_import_expenses(tax_year_id: str, entries: str) -> str:
+        """Batch-import multiple expense entries. entries: JSON string array, each item: {category, amount, date, currency?, exchangeRate?, vendor?, description?}"""
+        parsed: list[dict] = json.loads(entries)
         col = _expense_col(db, user_id, tax_year_id)
         batch = db.batch()
         now = datetime.now(timezone.utc)
-        for entry in entries:
+        for entry in parsed:
             currency = entry.get("currency", "CAD")
             amount_cad = _compute_amount_cad(entry["amount"], currency, entry.get("exchangeRate"))
             ref = col.document()
@@ -94,4 +95,4 @@ def register_expense_tools(mcp: FastMCP, db: Client, user_id: str):
                 "updatedAt": now,
             })
         batch.commit()
-        return json.dumps({"imported": len(entries)})
+        return json.dumps({"imported": len(parsed)})
