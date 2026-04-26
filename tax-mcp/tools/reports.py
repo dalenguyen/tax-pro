@@ -40,7 +40,11 @@ def register_report_tools(mcp: FastMCP, db: Client, user_id: str):
         props_docs = list(tax_year_ref.collection("rentalProperties").stream())
         invest_docs = list(tax_year_ref.collection("investments").stream())
 
-        # Business income (INTERNET_BUSINESS + STRIPE only)
+        employment_income = sum(
+            d.to_dict().get("amountCad") or d.to_dict().get("amount") or 0
+            for d in income_docs
+            if d.to_dict().get("sourceType") == "EMPLOYMENT"
+        )
         total_business_income = sum(
             d.to_dict().get("amountCad") or d.to_dict().get("amount") or 0
             for d in income_docs
@@ -71,12 +75,13 @@ def register_report_tools(mcp: FastMCP, db: Client, user_id: str):
             for d in invest_docs if d.to_dict().get("accountType") == "TFSA"
         )
 
-        total_income = total_business_income + total_rental_income
+        total_income = employment_income + total_business_income + total_rental_income
         total_deductions = total_business_expenses + rrsp
         taxable_income = total_income - total_deductions
 
         summary = {
             "taxYear": tax_year_doc.to_dict().get("year", 0),
+            "employmentIncome": employment_income,
             "totalBusinessIncome": total_business_income,
             "totalBusinessExpenses": total_business_expenses,
             "netBusinessIncome": total_business_income - total_business_expenses,
