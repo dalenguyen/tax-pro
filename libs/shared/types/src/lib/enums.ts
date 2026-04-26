@@ -13,11 +13,12 @@ export enum IncomeSourceType {
 export enum ExpenseCategoryType {
   EMAIL = 'EMAIL',
   GCP = 'GCP',
-  NAMECHEAP = 'NAMECHEAP',
+  DOMAIN_HOSTING = 'Domain & Hosting',
   PHONE = 'PHONE',
   INTERNET = 'INTERNET',
-  ADS = 'ADS',
-  HOSTING = 'HOSTING',
+  ADVERTISING = 'ADVERTISING',
+  SOFTWARE = 'SOFTWARE',
+  OFFICE = 'OFFICE',
   OTHER = 'OTHER',
 }
 

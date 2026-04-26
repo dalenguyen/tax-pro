@@ -66,7 +66,7 @@ import { ExpenseCategoryType } from '@cantax-fyi/types';
                   <tr class="hover:bg-gray-50">
                     <td class="px-4 py-3 text-sm">{{ entry.date | date:'yyyy-MM-dd' }}</td>
                     <td class="px-4 py-3 text-sm">
-                      <span class="bg-orange-100 text-orange-800 px-2 py-0.5 rounded text-xs">{{ entry.category }}</span>
+                      <span class="bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap">{{ entry.category }}</span>
                     </td>
                     <td class="px-4 py-3 text-sm">{{ entry.vendor || '—' }}</td>
                     <td class="px-4 py-3 text-sm text-gray-600">{{ entry.description || '—' }}</td>

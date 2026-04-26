@@ -36,13 +36,14 @@ export default defineEventHandler(async (event) => {
     expTotals[cat] = (expTotals[cat] ?? 0) + (d['amountCad'] ?? d['amount'] ?? 0);
   }
 
-  const advertising = expTotals[ExpenseCategoryType.ADS] ?? 0;
+  const advertising = expTotals[ExpenseCategoryType.ADVERTISING] ?? 0;
   const internet = (expTotals[ExpenseCategoryType.INTERNET] ?? 0) + (expTotals[ExpenseCategoryType.PHONE] ?? 0);
   const officeExpenses =
     (expTotals[ExpenseCategoryType.EMAIL] ?? 0) +
     (expTotals[ExpenseCategoryType.GCP] ?? 0) +
-    (expTotals[ExpenseCategoryType.NAMECHEAP] ?? 0) +
-    (expTotals[ExpenseCategoryType.HOSTING] ?? 0);
+    (expTotals[ExpenseCategoryType.DOMAIN_HOSTING] ?? 0) +
+    (expTotals[ExpenseCategoryType.SOFTWARE] ?? 0) +
+    (expTotals[ExpenseCategoryType.OFFICE] ?? 0);
   const otherExpenses = expTotals[ExpenseCategoryType.OTHER] ?? 0;
 
   const totalExpenses = advertising + internet + officeExpenses + otherExpenses;
