@@ -65,7 +65,7 @@ import { IncomeSourceType } from '@cantax-fyi/types';
                   <tr class="hover:bg-gray-50">
                     <td class="px-4 py-3 text-sm">{{ entry.date | date:'yyyy-MM-dd' }}</td>
                     <td class="px-4 py-3 text-sm">
-                      <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs">{{ entry.sourceType }}</span>
+                      <span class="bg-green-50 text-green-700 border border-green-200 px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap">{{ entry.sourceType }}</span>
                     </td>
                     <td class="px-4 py-3 text-sm text-gray-600">{{ entry.description || '—' }}</td>
                     <td class="px-4 py-3 text-sm text-right font-mono">{{ entry.amount | number:'1.2-2' }}</td>

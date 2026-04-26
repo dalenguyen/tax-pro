@@ -14,7 +14,7 @@ export class ExpenseService {
     this.loading.set(true);
     try {
       let url = `/api/expenses?taxYearId=${taxYearId}`;
-      if (category) url += `&category=${category}`;
+      if (category) url += `&category=${encodeURIComponent(category)}`;
       const data = await firstValueFrom(this.http.get<ExpenseEntry[]>(url));
       this.entries.set(data);
     } finally {
