@@ -55,3 +55,7 @@ Thumbs.db
 
 # Prisma generated client
 libs/db/src/generated/
+
+# Python
+tax-mcp/.venv/
+libs/tax-mcp/cantax-fyi-tax-mcp-*.tgz
