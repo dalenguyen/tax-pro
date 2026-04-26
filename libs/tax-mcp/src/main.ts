@@ -20,6 +20,7 @@ async function main() {
   const stdio = new StdioServerTransport();
 
   stdio.onmessage = async (msg) => {
+    const isNotification = !('id' in msg);
     try {
       const res = await fetch(SERVER_URL, {
         method: 'POST',
@@ -35,6 +36,9 @@ async function main() {
         process.stderr.write(`HTTP ${res.status}: ${await res.text()}\n`);
         return;
       }
+
+      // JSON-RPC notifications have no id — responses are not allowed
+      if (isNotification) return;
 
       const contentType = res.headers.get('content-type') ?? '';
 

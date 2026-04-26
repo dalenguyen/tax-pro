@@ -2,7 +2,7 @@
 
 MCP (Model Context Protocol) server for [Can Tax](https://cantax.fyi). Lets Claude Code and other MCP-compatible AI assistants read and write your Canadian tax data directly via natural language.
 
-## Tools (25 total)
+## Tools (26 total)
 
 ### Tax Years
 | Tool | Description |
@@ -125,7 +125,7 @@ Or with the flag directly:
 
 ### 3. Restart your MCP client
 
-Run `/mcp` in Claude Code — you should see `cantax-fyi` listed with 25 tools.
+Run `/mcp` in Claude Code — you should see `cantax-fyi` listed with 26 tools.
 
 ### Revoking a key
 
@@ -151,7 +151,7 @@ List all PENDING receipts for tax year <id>
 
 **Income source types:** `RENTAL` `INTERNET_BUSINESS` `STRIPE`
 
-**Expense categories:** `EMAIL` `GCP` `NAMECHEAP` `PHONE` `INTERNET` `ADS` `HOSTING` `OTHER`
+**Expense categories:** `EMAIL` `GCP` `NAMECHEAP` `PHONE` `INTERNET` `ADS` `HOSTING` `SOFTWARE` `OTHER`
 
 **Rental expense categories:** `WATER` `PROPERTY_TAX` `INSURANCE` `MORTGAGE` `LAWYER` `RENOVATION` `HYDRO` `OTHER`
 
