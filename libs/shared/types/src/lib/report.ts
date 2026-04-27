@@ -7,6 +7,8 @@ export interface TaxSummary {
   totalRentalIncome: number;
   totalRentalExpenses: number;
   netRentalIncome: number;
+  investmentIncome: number;
+  cryptoIncome: number;
   rrspContributions: number;
   tfsaContributions: number;
   totalIncome: number;
