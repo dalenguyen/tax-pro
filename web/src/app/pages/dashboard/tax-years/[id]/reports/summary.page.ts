@@ -91,20 +91,52 @@ import { TaxSummary } from '@cantax-fyi/types';
               </div>
             </section>
 
-            <!-- Investments -->
-            <section>
-              <h3 class="text-lg font-semibold text-gray-900 border-b pb-2 mb-4">Investments</h3>
-              <div class="space-y-2">
-                <div class="flex justify-between">
-                  <span class="text-gray-600">RRSP Contributions</span>
-                  <span class="font-mono font-medium">\${{ data()!.rrspContributions | number:'1.2-2' }}</span>
+            <!-- Investment Income (T5) -->
+            @if (data()!.investmentIncome > 0) {
+              <section>
+                <h3 class="text-lg font-semibold text-gray-900 border-b pb-2 mb-4">Investment Income (T5)</h3>
+                <div class="space-y-2">
+                  <div class="flex justify-between font-semibold">
+                    <span>Total Investment Income</span>
+                    <span class="font-mono text-green-700">\${{ data()!.investmentIncome | number:'1.2-2' }}</span>
+                  </div>
                 </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">TFSA Contributions</span>
-                  <span class="font-mono font-medium">\${{ data()!.tfsaContributions | number:'1.2-2' }}</span>
+              </section>
+            }
+
+            <!-- Crypto Income -->
+            @if (data()!.cryptoIncome > 0) {
+              <section>
+                <h3 class="text-lg font-semibold text-gray-900 border-b pb-2 mb-4">Crypto Income</h3>
+                <div class="space-y-2">
+                  <div class="flex justify-between font-semibold">
+                    <span>Total Crypto Income</span>
+                    <span class="font-mono text-green-700">\${{ data()!.cryptoIncome | number:'1.2-2' }}</span>
+                  </div>
                 </div>
-              </div>
-            </section>
+              </section>
+            }
+
+            <!-- Registered Accounts -->
+            @if (data()!.rrspContributions > 0 || data()!.tfsaContributions > 0) {
+              <section>
+                <h3 class="text-lg font-semibold text-gray-900 border-b pb-2 mb-4">Registered Accounts</h3>
+                <div class="space-y-2">
+                  @if (data()!.rrspContributions > 0) {
+                    <div class="flex justify-between">
+                      <span class="text-gray-600">RRSP Contributions</span>
+                      <span class="font-mono font-medium">\${{ data()!.rrspContributions | number:'1.2-2' }}</span>
+                    </div>
+                  }
+                  @if (data()!.tfsaContributions > 0) {
+                    <div class="flex justify-between">
+                      <span class="text-gray-600">TFSA Contributions</span>
+                      <span class="font-mono font-medium">\${{ data()!.tfsaContributions | number:'1.2-2' }}</span>
+                    </div>
+                  }
+                </div>
+              </section>
+            }
 
             <!-- Totals -->
             <section class="bg-gray-50 rounded-lg p-6">

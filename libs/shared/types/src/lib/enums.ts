@@ -8,6 +8,8 @@ export enum IncomeSourceType {
   INTERNET_BUSINESS = 'INTERNET_BUSINESS',
   STRIPE = 'STRIPE',
   EMPLOYMENT = 'EMPLOYMENT',
+  INVESTMENT = 'INVESTMENT',
+  CRYPTO = 'CRYPTO',
 }
 
 export enum ExpenseCategoryType {

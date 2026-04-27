@@ -34,16 +34,21 @@ export default defineEventHandler(async (event) => {
     investmentsCol(userId, taxYearId).get(),
   ]);
 
-  // Employment (T4) income
   let employmentIncome = 0;
-  // Business income
   let totalBusinessIncome = 0;
+  let investmentIncome = 0;
+  let cryptoIncome = 0;
   for (const doc of incomeSnap.docs) {
     const d = doc.data();
+    const amt = d['amountCad'] ?? d['amount'] ?? 0;
     if (d['sourceType'] === IncomeSourceType.EMPLOYMENT) {
-      employmentIncome += d['amountCad'] ?? d['amount'] ?? 0;
+      employmentIncome += amt;
     } else if (d['sourceType'] === IncomeSourceType.INTERNET_BUSINESS || d['sourceType'] === IncomeSourceType.STRIPE) {
-      totalBusinessIncome += d['amountCad'] ?? d['amount'] ?? 0;
+      totalBusinessIncome += amt;
+    } else if (d['sourceType'] === IncomeSourceType.INVESTMENT) {
+      investmentIncome += amt;
+    } else if (d['sourceType'] === IncomeSourceType.CRYPTO) {
+      cryptoIncome += amt;
     }
   }
 
@@ -76,7 +81,7 @@ export default defineEventHandler(async (event) => {
     else if (d['accountType'] === InvestmentAccountType.TFSA) tfsaContributions += amt;
   }
 
-  const totalIncome = employmentIncome + totalBusinessIncome + totalRentalIncome;
+  const totalIncome = employmentIncome + totalBusinessIncome + totalRentalIncome + investmentIncome + cryptoIncome;
   const totalDeductions = totalBusinessExpenses + rrspContributions;
   const taxableIncome = totalIncome - totalDeductions;
 
@@ -89,6 +94,8 @@ export default defineEventHandler(async (event) => {
     totalRentalIncome,
     totalRentalExpenses,
     netRentalIncome: totalRentalIncome - totalRentalExpenses,
+    investmentIncome,
+    cryptoIncome,
     rrspContributions,
     tfsaContributions,
     totalIncome,
