@@ -4,12 +4,19 @@ import { FormsModule } from '@angular/forms';
 import { DatePipe, DecimalPipe, CurrencyPipe } from '@angular/common';
 import { InvestmentService } from '../../../../../services/investment.service';
 import { InvestmentAccountType } from '@cantax-fyi/types';
+import { ConfirmDialogComponent } from '../../../../../components/confirm-dialog.component';
 
 @Component({
   selector: 'app-investments-list',
-  imports: [RouterLink, FormsModule, DatePipe, DecimalPipe, CurrencyPipe],
+  imports: [RouterLink, FormsModule, DatePipe, DecimalPipe, CurrencyPipe, ConfirmDialogComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    <app-confirm-dialog
+      [open]="deleteDialogOpen()"
+      title="Delete Contribution"
+      message="This will permanently delete this investment contribution."
+      (confirm)="confirmDelete()"
+      (cancel)="deleteDialogOpen.set(false)" />
     <div class="min-h-screen bg-gray-50 p-6">
       <div class="max-w-6xl mx-auto">
         <div class="flex items-center gap-4 mb-6">
@@ -112,6 +119,8 @@ export default class InvestmentsListComponent implements OnInit {
 
   taxYearId = '';
   selectedTab = '';
+  deleteDialogOpen = signal(false);
+  private pendingDeleteId = '';
 
   tabs = [
     { label: 'All', value: '' },
@@ -149,13 +158,17 @@ export default class InvestmentsListComponent implements OnInit {
     );
   }
 
-  async onDelete(id: string) {
-    if (confirm('Delete this contribution?')) {
-      await this.investmentService.deleteContribution(this.taxYearId, id);
-      await this.investmentService.loadContributions(
-        this.taxYearId,
-        this.selectedTab ? (this.selectedTab as InvestmentAccountType) : undefined
-      );
-    }
+  onDelete(id: string) {
+    this.pendingDeleteId = id;
+    this.deleteDialogOpen.set(true);
+  }
+
+  async confirmDelete() {
+    this.deleteDialogOpen.set(false);
+    await this.investmentService.deleteContribution(this.taxYearId, this.pendingDeleteId);
+    await this.investmentService.loadContributions(
+      this.taxYearId,
+      this.selectedTab ? (this.selectedTab as InvestmentAccountType) : undefined
+    );
   }
 }

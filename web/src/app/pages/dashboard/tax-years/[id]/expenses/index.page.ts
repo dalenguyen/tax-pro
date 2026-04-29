@@ -1,15 +1,22 @@
-import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy, signal } from '@angular/core';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ExpenseService } from '../../../../../services/expense.service';
 import { ExpenseCategoryType } from '@cantax-fyi/types';
+import { ConfirmDialogComponent } from '../../../../../components/confirm-dialog.component';
 
 @Component({
   selector: 'app-expense-list',
-  imports: [RouterLink, FormsModule, DatePipe, DecimalPipe],
+  imports: [RouterLink, FormsModule, DatePipe, DecimalPipe, ConfirmDialogComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    <app-confirm-dialog
+      [open]="deleteDialogOpen()"
+      title="Delete Expense"
+      message="This will permanently delete this expense entry."
+      (confirm)="confirmDelete()"
+      (cancel)="deleteDialogOpen.set(false)" />
     <div class="min-h-screen bg-gray-50 p-6">
       <div class="max-w-6xl mx-auto">
         <div class="flex items-center gap-4 mb-6">
@@ -96,6 +103,8 @@ export default class ExpenseListComponent implements OnInit {
   taxYearId = '';
   selectedCategory = '';
   categories = Object.values(ExpenseCategoryType);
+  deleteDialogOpen = signal(false);
+  private pendingDeleteId = '';
 
   ngOnInit() {
     this.taxYearId = this.route.snapshot.params['id'];
@@ -106,10 +115,14 @@ export default class ExpenseListComponent implements OnInit {
     this.expenseService.loadEntries(this.taxYearId, category || undefined);
   }
 
-  async onDelete(id: string) {
-    if (confirm('Delete this expense entry?')) {
-      await this.expenseService.deleteEntry(this.taxYearId, id);
-      await this.expenseService.loadEntries(this.taxYearId, this.selectedCategory || undefined);
-    }
+  onDelete(id: string) {
+    this.pendingDeleteId = id;
+    this.deleteDialogOpen.set(true);
+  }
+
+  async confirmDelete() {
+    this.deleteDialogOpen.set(false);
+    await this.expenseService.deleteEntry(this.taxYearId, this.pendingDeleteId);
+    await this.expenseService.loadEntries(this.taxYearId, this.selectedCategory || undefined);
   }
 }

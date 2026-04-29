@@ -3,12 +3,19 @@ import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { IncomeService } from '../../../../../services/income.service';
 import { IncomeSourceType, Currency } from '@cantax-fyi/types';
+import { ConfirmDialogComponent } from '../../../../../components/confirm-dialog.component';
 
 @Component({
   selector: 'app-income-edit',
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, ConfirmDialogComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    <app-confirm-dialog
+      [open]="deleteDialogOpen()"
+      title="Delete Income"
+      message="This will permanently delete this income entry."
+      (confirm)="confirmDelete()"
+      (cancel)="deleteDialogOpen.set(false)" />
     <div class="min-h-screen bg-gray-50 p-6">
       <div class="max-w-2xl mx-auto">
         <div class="flex items-center gap-4 mb-6">
@@ -108,6 +115,7 @@ export default class IncomeEditComponent implements OnInit {
   entryId = '';
   loading = signal(true);
   submitting = signal(false);
+  deleteDialogOpen = signal(false);
 
   sourceType = IncomeSourceType.INTERNET_BUSINESS;
   description = '';
@@ -164,10 +172,13 @@ export default class IncomeEditComponent implements OnInit {
     }
   }
 
-  async onDelete() {
-    if (confirm('Delete this income entry?')) {
-      await this.incomeService.deleteEntry(this.taxYearId, this.entryId);
-      this.router.navigate(['/dashboard/tax-years', this.taxYearId, 'income']);
-    }
+  onDelete() {
+    this.deleteDialogOpen.set(true);
+  }
+
+  async confirmDelete() {
+    this.deleteDialogOpen.set(false);
+    await this.incomeService.deleteEntry(this.taxYearId, this.entryId);
+    this.router.navigate(['/dashboard/tax-years', this.taxYearId, 'income']);
   }
 }

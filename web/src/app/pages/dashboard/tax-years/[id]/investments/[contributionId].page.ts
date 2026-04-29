@@ -3,12 +3,19 @@ import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { InvestmentService } from '../../../../../services/investment.service';
 import { InvestmentAccountType, Currency } from '@cantax-fyi/types';
+import { ConfirmDialogComponent } from '../../../../../components/confirm-dialog.component';
 
 @Component({
   selector: 'app-investments-edit',
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, ConfirmDialogComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    <app-confirm-dialog
+      [open]="deleteDialogOpen()"
+      title="Delete Contribution"
+      message="This will permanently delete this investment contribution."
+      (confirm)="confirmDelete()"
+      (cancel)="deleteDialogOpen.set(false)" />
     <div class="min-h-screen bg-gray-50 p-6">
       <div class="max-w-2xl mx-auto">
         <div class="flex items-center gap-4 mb-6">
@@ -116,6 +123,7 @@ export default class InvestmentsEditComponent implements OnInit {
   contributionId = '';
   loading = signal(true);
   submitting = signal(false);
+  deleteDialogOpen = signal(false);
 
   accountType = InvestmentAccountType.RRSP;
   amount = 0;
@@ -171,10 +179,13 @@ export default class InvestmentsEditComponent implements OnInit {
     }
   }
 
-  async onDelete() {
-    if (confirm('Delete this contribution?')) {
-      await this.investmentService.deleteContribution(this.taxYearId, this.contributionId);
-      this.router.navigate(['/dashboard/tax-years', this.taxYearId, 'investments']);
-    }
+  onDelete() {
+    this.deleteDialogOpen.set(true);
+  }
+
+  async confirmDelete() {
+    this.deleteDialogOpen.set(false);
+    await this.investmentService.deleteContribution(this.taxYearId, this.contributionId);
+    this.router.navigate(['/dashboard/tax-years', this.taxYearId, 'investments']);
   }
 }

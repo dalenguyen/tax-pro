@@ -4,12 +4,19 @@ import { FormsModule } from '@angular/forms';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { RentalService } from '../../../../../services/rental.service';
 import { RentalIncome, RentalExpense, RentalExpenseCategory } from '@cantax-fyi/types';
+import { ConfirmDialogComponent } from '../../../../../components/confirm-dialog.component';
 
 @Component({
   selector: 'app-rental-detail',
-  imports: [RouterLink, FormsModule, DatePipe, DecimalPipe],
+  imports: [RouterLink, FormsModule, DatePipe, DecimalPipe, ConfirmDialogComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    <app-confirm-dialog
+      [open]="deleteDialogOpen()"
+      [title]="deleteDialogTitle()"
+      message="This will permanently delete this entry."
+      (confirm)="confirmDelete()"
+      (cancel)="deleteDialogOpen.set(false)" />
     <div class="min-h-screen bg-gray-50 p-6">
       <div class="max-w-5xl mx-auto">
         <div class="flex items-center gap-4 mb-6">
@@ -182,6 +189,10 @@ export default class RentalDetailComponent implements OnInit {
   editingAddress = signal(false);
   submittingIncome = signal(false);
   submittingExpense = signal(false);
+  deleteDialogOpen = signal(false);
+  deleteDialogTitle = signal('Delete Entry');
+  private pendingDeleteId = '';
+  private pendingDeleteType: 'income' | 'expense' = 'income';
 
   address = '';
   incomes = signal<RentalIncome[]>([]);
@@ -259,12 +270,11 @@ export default class RentalDetailComponent implements OnInit {
     }
   }
 
-  async deleteIncome(id: string) {
-    if (confirm('Delete this income entry?')) {
-      await this.rentalService.deleteIncome(this.taxYearId, this.propertyId, id);
-      this.incomes.update(list => list.filter(i => i.id !== id));
-      this.recalcTotals();
-    }
+  deleteIncome(id: string) {
+    this.pendingDeleteId = id;
+    this.pendingDeleteType = 'income';
+    this.deleteDialogTitle.set('Delete Income Entry');
+    this.deleteDialogOpen.set(true);
   }
 
   async addExpense() {
@@ -285,11 +295,22 @@ export default class RentalDetailComponent implements OnInit {
     }
   }
 
-  async deleteExpense(id: string) {
-    if (confirm('Delete this expense?')) {
-      await this.rentalService.deleteExpense(this.taxYearId, this.propertyId, id);
-      this.expenses.update(list => list.filter(e => e.id !== id));
-      this.recalcTotals();
+  deleteExpense(id: string) {
+    this.pendingDeleteId = id;
+    this.pendingDeleteType = 'expense';
+    this.deleteDialogTitle.set('Delete Expense');
+    this.deleteDialogOpen.set(true);
+  }
+
+  async confirmDelete() {
+    this.deleteDialogOpen.set(false);
+    if (this.pendingDeleteType === 'income') {
+      await this.rentalService.deleteIncome(this.taxYearId, this.propertyId, this.pendingDeleteId);
+      this.incomes.update(list => list.filter(i => i.id !== this.pendingDeleteId));
+    } else {
+      await this.rentalService.deleteExpense(this.taxYearId, this.propertyId, this.pendingDeleteId);
+      this.expenses.update(list => list.filter(e => e.id !== this.pendingDeleteId));
     }
+    this.recalcTotals();
   }
 }
