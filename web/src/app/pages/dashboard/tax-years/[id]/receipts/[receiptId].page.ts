@@ -9,14 +9,21 @@ import {
   ReceiptExtractionReviewComponent,
   ExtractionFormData,
 } from '../../../../../components/receipt-extraction-review.component';
+import { ConfirmDialogComponent } from '../../../../../components/confirm-dialog.component';
 
 type ReceiptWithUrl = Receipt & { downloadUrl: string };
 
 @Component({
   selector: 'app-receipt-detail',
-  imports: [RouterLink, FormsModule, DatePipe, DecimalPipe, ReceiptExtractionReviewComponent],
+  imports: [RouterLink, FormsModule, DatePipe, DecimalPipe, ReceiptExtractionReviewComponent, ConfirmDialogComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    <app-confirm-dialog
+      [open]="deleteDialogOpen()"
+      title="Delete Receipt"
+      message="This will permanently delete this receipt."
+      (confirm)="confirmDelete()"
+      (cancel)="deleteDialogOpen.set(false)" />
     <div class="min-h-screen bg-gray-50 p-6">
       <div class="max-w-3xl mx-auto">
         <div class="flex items-center gap-4 mb-6">
@@ -161,6 +168,7 @@ export default class ReceiptDetailComponent implements OnInit {
   receipt = signal<ReceiptWithUrl | null>(null);
   loading = signal(true);
   extracting = signal(false);
+  deleteDialogOpen = signal(false);
   extractionResult = signal<Record<string, unknown> | null>(null);
   linkedTypes = Object.values(LinkedType);
   linkedType = '';
@@ -238,10 +246,13 @@ export default class ReceiptDetailComponent implements OnInit {
     await this.loadReceipt();
   }
 
-  async onDelete() {
-    if (confirm('Delete this receipt?')) {
-      await this.receiptService.deleteReceipt(this.taxYearId, this.receiptId);
-      await this.router.navigate(['/dashboard/tax-years', this.taxYearId, 'receipts']);
-    }
+  onDelete() {
+    this.deleteDialogOpen.set(true);
+  }
+
+  async confirmDelete() {
+    this.deleteDialogOpen.set(false);
+    await this.receiptService.deleteReceipt(this.taxYearId, this.receiptId);
+    await this.router.navigate(['/dashboard/tax-years', this.taxYearId, 'receipts']);
   }
 }

@@ -2,12 +2,19 @@ import { Component, inject, OnInit, ChangeDetectionStrategy, signal } from '@ang
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { RentalService } from '../../../../../services/rental.service';
+import { ConfirmDialogComponent } from '../../../../../components/confirm-dialog.component';
 
 @Component({
   selector: 'app-rental-list',
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, ConfirmDialogComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    <app-confirm-dialog
+      [open]="deleteDialogOpen()"
+      title="Delete Rental Property"
+      message="This will permanently delete this rental property and all associated data."
+      (confirm)="confirmDelete()"
+      (cancel)="deleteDialogOpen.set(false)" />
     <div class="min-h-screen bg-gray-50 p-6">
       <div class="max-w-4xl mx-auto">
         <div class="flex items-center gap-4 mb-6">
@@ -56,6 +63,8 @@ export default class RentalListComponent implements OnInit {
   rentalService = inject(RentalService);
 
   taxYearId = '';
+  deleteDialogOpen = signal(false);
+  private pendingDeleteId = '';
 
   ngOnInit() {
     this.taxYearId = this.route.snapshot.params['id'];
@@ -66,10 +75,14 @@ export default class RentalListComponent implements OnInit {
     this.router.navigate(['/dashboard/tax-years', this.taxYearId, 'rental', propertyId]);
   }
 
-  async onDelete(id: string) {
-    if (confirm('Delete this rental property?')) {
-      await this.rentalService.deleteProperty(this.taxYearId, id);
-      await this.rentalService.loadProperties(this.taxYearId);
-    }
+  onDelete(id: string) {
+    this.pendingDeleteId = id;
+    this.deleteDialogOpen.set(true);
+  }
+
+  async confirmDelete() {
+    this.deleteDialogOpen.set(false);
+    await this.rentalService.deleteProperty(this.taxYearId, this.pendingDeleteId);
+    await this.rentalService.loadProperties(this.taxYearId);
   }
 }

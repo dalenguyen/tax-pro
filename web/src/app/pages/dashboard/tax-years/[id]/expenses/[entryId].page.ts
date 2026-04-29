@@ -3,12 +3,19 @@ import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ExpenseService } from '../../../../../services/expense.service';
 import { ExpenseCategoryType, Currency } from '@cantax-fyi/types';
+import { ConfirmDialogComponent } from '../../../../../components/confirm-dialog.component';
 
 @Component({
   selector: 'app-expense-edit',
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, ConfirmDialogComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    <app-confirm-dialog
+      [open]="deleteDialogOpen()"
+      title="Delete Expense"
+      message="This will permanently delete this expense entry."
+      (confirm)="confirmDelete()"
+      (cancel)="deleteDialogOpen.set(false)" />
     <div class="min-h-screen bg-gray-50 p-6">
       <div class="max-w-2xl mx-auto">
         <div class="flex items-center gap-4 mb-6">
@@ -115,6 +122,7 @@ export default class ExpenseEditComponent implements OnInit {
   entryId = '';
   loading = signal(true);
   submitting = signal(false);
+  deleteDialogOpen = signal(false);
 
   category = ExpenseCategoryType.OTHER;
   vendor = '';
@@ -173,10 +181,13 @@ export default class ExpenseEditComponent implements OnInit {
     }
   }
 
-  async onDelete() {
-    if (confirm('Delete this expense entry?')) {
-      await this.expenseService.deleteEntry(this.taxYearId, this.entryId);
-      this.router.navigate(['/dashboard/tax-years', this.taxYearId, 'expenses']);
-    }
+  onDelete() {
+    this.deleteDialogOpen.set(true);
+  }
+
+  async confirmDelete() {
+    this.deleteDialogOpen.set(false);
+    await this.expenseService.deleteEntry(this.taxYearId, this.entryId);
+    this.router.navigate(['/dashboard/tax-years', this.taxYearId, 'expenses']);
   }
 }

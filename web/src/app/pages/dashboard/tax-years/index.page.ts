@@ -2,12 +2,19 @@ import { Component, inject, OnInit, ChangeDetectionStrategy, signal } from '@ang
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TaxYearService } from '../../../services/tax-year.service';
+import { ConfirmDialogComponent } from '../../../components/confirm-dialog.component';
 
 @Component({
   selector: 'app-tax-years',
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, ConfirmDialogComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    <app-confirm-dialog
+      [open]="deleteDialogOpen()"
+      title="Delete Tax Year"
+      message="This will permanently delete the tax year and all associated data."
+      (confirm)="confirmDelete()"
+      (cancel)="deleteDialogOpen.set(false)" />
     <div class="min-h-screen bg-gray-50 p-6">
       <div class="max-w-4xl mx-auto">
         <div class="flex items-center gap-4 mb-6">
@@ -85,6 +92,8 @@ export default class TaxYearsIndexComponent implements OnInit {
 
   year = new Date().getFullYear();
   notes = '';
+  deleteDialogOpen = signal(false);
+  private pendingDeleteId = '';
 
   ngOnInit() {
     this.taxYearService.loadTaxYears();
@@ -95,9 +104,13 @@ export default class TaxYearsIndexComponent implements OnInit {
     this.notes = '';
   }
 
-  async onDelete(id: string) {
-    if (confirm('Delete this tax year?')) {
-      await this.taxYearService.deleteTaxYear(id);
-    }
+  onDelete(id: string) {
+    this.pendingDeleteId = id;
+    this.deleteDialogOpen.set(true);
+  }
+
+  async confirmDelete() {
+    this.deleteDialogOpen.set(false);
+    await this.taxYearService.deleteTaxYear(this.pendingDeleteId);
   }
 }
