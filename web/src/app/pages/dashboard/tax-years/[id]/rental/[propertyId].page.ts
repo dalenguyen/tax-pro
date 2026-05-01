@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ChangeDetectionStrategy, signal, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy, signal, computed, ChangeDetectorRef } from '@angular/core';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DatePipe, DecimalPipe } from '@angular/common';
@@ -106,11 +106,21 @@ import { ConfirmDialogComponent } from '../../../../../components/confirm-dialog
 
           <!-- Rental Expenses Section -->
           <div class="bg-white rounded-lg shadow">
-            <div class="px-4 py-3 border-b border-gray-200">
+            <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between gap-4">
               <h2 class="text-lg font-semibold text-gray-900">Rental Expenses</h2>
+              <div class="flex items-center gap-2">
+                <label class="text-sm text-gray-600">Filter by category:</label>
+                <select [ngModel]="selectedCategory()" (ngModelChange)="selectedCategory.set($event)" name="filterCategory"
+                        class="border border-gray-300 rounded px-2 py-1 text-sm">
+                  <option value="">All</option>
+                  @for (cat of expenseCategories; track cat) {
+                    <option [value]="cat">{{ cat }}</option>
+                  }
+                </select>
+              </div>
             </div>
 
-            @if (expenses().length > 0) {
+            @if (filteredExpenses().length > 0) {
               <div class="overflow-x-auto">
                 <table class="w-full">
                   <thead class="bg-gray-50">
@@ -123,7 +133,7 @@ import { ConfirmDialogComponent } from '../../../../../components/confirm-dialog
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-gray-200">
-                    @for (expense of expenses(); track expense.id) {
+                    @for (expense of filteredExpenses(); track expense.id) {
                       <tr class="hover:bg-gray-50">
                         <td class="px-4 py-3 text-sm">{{ expense.date | date:'yyyy-MM-dd' }}</td>
                         <td class="px-4 py-3 text-sm">
@@ -138,8 +148,8 @@ import { ConfirmDialogComponent } from '../../../../../components/confirm-dialog
                       </tr>
                     }
                     <tr class="bg-gray-50 font-medium">
-                      <td class="px-4 py-3 text-sm" colspan="3">Total</td>
-                      <td class="px-4 py-3 text-sm text-right font-mono">{{ totalExpenses() | number:'1.2-2' }}</td>
+                      <td class="px-4 py-3 text-sm" colspan="3">{{ selectedCategory() ? 'Filtered Total' : 'Total' }}</td>
+                      <td class="px-4 py-3 text-sm text-right font-mono">{{ filteredTotal() | number:'1.2-2' }}</td>
                       <td></td>
                     </tr>
                   </tbody>
@@ -202,6 +212,17 @@ export default class RentalDetailComponent implements OnInit {
   totalExpenses = signal(0);
 
   expenseCategories = Object.values(RentalExpenseCategory);
+  selectedCategory = signal('');
+
+  filteredExpenses = computed(() =>
+    this.selectedCategory()
+      ? this.expenses().filter(e => e.category === this.selectedCategory())
+      : this.expenses()
+  );
+
+  filteredTotal = computed(() =>
+    this.filteredExpenses().reduce((sum, e) => sum + e.amount, 0)
+  );
 
   newIncome = {
     description: '',
