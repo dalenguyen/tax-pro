@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DatePipe, DecimalPipe } from '@angular/common';
@@ -88,6 +88,11 @@ import { ConfirmDialogComponent } from '../../../../../components/confirm-dialog
                     </td>
                   </tr>
                 }
+                <tr class="bg-gray-50 font-semibold">
+                  <td class="px-4 py-3 text-sm" colspan="6">Total</td>
+                  <td class="px-4 py-3 text-sm text-right font-mono">{{ totalCad() | number:'1.2-2' }}</td>
+                  <td></td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -105,6 +110,10 @@ export default class ExpenseListComponent implements OnInit {
   categories = Object.values(ExpenseCategoryType);
   deleteDialogOpen = signal(false);
   private pendingDeleteId = '';
+
+  totalCad = computed(() =>
+    this.expenseService.entries().reduce((sum, e) => sum + (e.amountCad ?? e.amount), 0)
+  );
 
   ngOnInit() {
     this.taxYearId = this.route.snapshot.params['id'];
