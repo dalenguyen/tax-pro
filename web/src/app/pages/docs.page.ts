@@ -91,7 +91,7 @@ export const routeMeta = {
         <h3 class="text-lg font-semibold text-gray-800 mb-2">Step 3 — Restart your MCP client</h3>
         <p class="text-gray-600">
           In Claude Code run <code class="bg-gray-100 px-1 rounded">/mcp</code> — you should see
-          <code class="bg-gray-100 px-1 rounded">cantax-fyi</code> listed with 25 tools.
+          <code class="bg-gray-100 px-1 rounded">cantax-fyi</code> listed with 31 tools.
         </p>
       </section>
 
@@ -108,6 +108,7 @@ export const routeMeta = {
                 <tbody>
                   <tr><td class="px-3 py-2 border border-gray-200 font-mono">list_tax_years</td><td class="px-3 py-2 border border-gray-200 text-gray-600">List all tax years, newest first</td></tr>
                   <tr><td class="px-3 py-2 border border-gray-200 font-mono">create_tax_year</td><td class="px-3 py-2 border border-gray-200 text-gray-600">Create a new tax year (2000–2100)</td></tr>
+                  <tr><td class="px-3 py-2 border border-gray-200 font-mono">update_tax_year</td><td class="px-3 py-2 border border-gray-200 text-gray-600">Update the notes on a tax year</td></tr>
                   <tr><td class="px-3 py-2 border border-gray-200 font-mono">delete_tax_year</td><td class="px-3 py-2 border border-gray-200 text-gray-600">Delete a tax year and all its data</td></tr>
                 </tbody>
               </table>
@@ -122,6 +123,7 @@ export const routeMeta = {
                 <tbody>
                   <tr><td class="px-3 py-2 border border-gray-200 font-mono">list_income</td><td class="px-3 py-2 border border-gray-200 text-gray-600">List income entries, optionally filter by source type</td></tr>
                   <tr><td class="px-3 py-2 border border-gray-200 font-mono">create_income</td><td class="px-3 py-2 border border-gray-200 text-gray-600">Add a single income entry</td></tr>
+                  <tr><td class="px-3 py-2 border border-gray-200 font-mono">update_income</td><td class="px-3 py-2 border border-gray-200 text-gray-600">Update fields on an income entry (partial update)</td></tr>
                   <tr><td class="px-3 py-2 border border-gray-200 font-mono">delete_income</td><td class="px-3 py-2 border border-gray-200 text-gray-600">Delete a single income entry by ID</td></tr>
                   <tr><td class="px-3 py-2 border border-gray-200 font-mono">bulk_import_income</td><td class="px-3 py-2 border border-gray-200 text-gray-600">Batch-import multiple income entries</td></tr>
                 </tbody>
@@ -137,6 +139,7 @@ export const routeMeta = {
                 <tbody>
                   <tr><td class="px-3 py-2 border border-gray-200 font-mono">list_expenses</td><td class="px-3 py-2 border border-gray-200 text-gray-600">List expense entries, optionally filter by category</td></tr>
                   <tr><td class="px-3 py-2 border border-gray-200 font-mono">create_expense</td><td class="px-3 py-2 border border-gray-200 text-gray-600">Add a single expense entry</td></tr>
+                  <tr><td class="px-3 py-2 border border-gray-200 font-mono">update_expense</td><td class="px-3 py-2 border border-gray-200 text-gray-600">Update fields on an expense entry (partial update)</td></tr>
                   <tr><td class="px-3 py-2 border border-gray-200 font-mono">delete_expense</td><td class="px-3 py-2 border border-gray-200 text-gray-600">Delete a single expense entry by ID</td></tr>
                   <tr><td class="px-3 py-2 border border-gray-200 font-mono">bulk_import_expenses</td><td class="px-3 py-2 border border-gray-200 text-gray-600">Batch-import multiple expense entries</td></tr>
                 </tbody>
@@ -152,6 +155,7 @@ export const routeMeta = {
                 <tbody>
                   <tr><td class="px-3 py-2 border border-gray-200 font-mono">list_investments</td><td class="px-3 py-2 border border-gray-200 text-gray-600">List RRSP/TFSA contributions</td></tr>
                   <tr><td class="px-3 py-2 border border-gray-200 font-mono">create_investment</td><td class="px-3 py-2 border border-gray-200 text-gray-600">Record a new RRSP or TFSA contribution</td></tr>
+                  <tr><td class="px-3 py-2 border border-gray-200 font-mono">update_investment</td><td class="px-3 py-2 border border-gray-200 text-gray-600">Update fields on an investment contribution (partial update)</td></tr>
                   <tr><td class="px-3 py-2 border border-gray-200 font-mono">delete_investment</td><td class="px-3 py-2 border border-gray-200 text-gray-600">Delete a single investment contribution by ID</td></tr>
                 </tbody>
               </table>
@@ -169,9 +173,11 @@ export const routeMeta = {
                   <tr><td class="px-3 py-2 border border-gray-200 font-mono">delete_rental_property</td><td class="px-3 py-2 border border-gray-200 text-gray-600">Delete a rental property and all its data</td></tr>
                   <tr><td class="px-3 py-2 border border-gray-200 font-mono">list_rental_income</td><td class="px-3 py-2 border border-gray-200 text-gray-600">List income entries for a property</td></tr>
                   <tr><td class="px-3 py-2 border border-gray-200 font-mono">add_rental_income</td><td class="px-3 py-2 border border-gray-200 text-gray-600">Record rental income for a property</td></tr>
+                  <tr><td class="px-3 py-2 border border-gray-200 font-mono">update_rental_income</td><td class="px-3 py-2 border border-gray-200 text-gray-600">Update fields on a rental income entry (partial update)</td></tr>
                   <tr><td class="px-3 py-2 border border-gray-200 font-mono">delete_rental_income</td><td class="px-3 py-2 border border-gray-200 text-gray-600">Delete a single rental income entry</td></tr>
                   <tr><td class="px-3 py-2 border border-gray-200 font-mono">list_rental_expenses</td><td class="px-3 py-2 border border-gray-200 text-gray-600">List expenses for a property</td></tr>
                   <tr><td class="px-3 py-2 border border-gray-200 font-mono">add_rental_expense</td><td class="px-3 py-2 border border-gray-200 text-gray-600">Record a rental expense for a property</td></tr>
+                  <tr><td class="px-3 py-2 border border-gray-200 font-mono">update_rental_expense</td><td class="px-3 py-2 border border-gray-200 text-gray-600">Update fields on a rental expense entry (partial update)</td></tr>
                   <tr><td class="px-3 py-2 border border-gray-200 font-mono">delete_rental_expense</td><td class="px-3 py-2 border border-gray-200 text-gray-600">Delete a single rental expense entry</td></tr>
                 </tbody>
               </table>
