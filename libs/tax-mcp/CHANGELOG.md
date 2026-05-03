@@ -1,3 +1,14 @@
+## 0.1.16 (2026-05-03)
+
+### 🩹 Fixes
+
+- **tax-mcp:** skip stdio response for JSON-RPC notifications ([970178f](https://github.com/dalenguyen/tax-pro/commit/970178f))
+
+### ❤️ Thank You
+
+- Claude Sonnet 4.6
+- Dale Nguyen @dalenguyen
+
 ## 0.1.15 (2026-04-26)
 
 This was a version bump only for tax-mcp-sdk to align it with other projects, there were no code changes.
