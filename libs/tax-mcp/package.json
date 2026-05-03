@@ -15,6 +15,15 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0"
   },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "tax",
+    "canada",
+    "canadian-tax",
+    "claude",
+    "ai"
+  ],
   "engines": {
     "node": ">=22"
   }
