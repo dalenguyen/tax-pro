@@ -89,10 +89,58 @@ def register_rental_tools(mcp: FastMCP, db: Client, user_id: str):
         return json.dumps({"deleted": income_id})
 
     @mcp.tool()
+    def update_rental_income(
+        tax_year_id: str,
+        property_id: str,
+        income_id: str,
+        amount: Optional[float] = None,
+        date: Optional[str] = None,
+        description: Optional[str] = None,
+    ) -> str:
+        """Update fields on a rental income entry. Only provided fields are changed. Pass empty string to clear description."""
+        ref = _incomes_col(tax_year_id, property_id).document(income_id)
+        update_data: dict = {"updatedAt": datetime.now(timezone.utc)}
+        if amount is not None:
+            update_data["amount"] = amount
+        if date is not None:
+            update_data["date"] = datetime.fromisoformat(date)
+        if description is not None:
+            update_data["description"] = description or None
+        ref.update(update_data)
+        doc = ref.get()
+        return json.dumps({"id": doc.id, **doc.to_dict()}, default=str)
+
+    @mcp.tool()
     def delete_rental_expense(tax_year_id: str, property_id: str, expense_id: str) -> str:
         """Delete a single rental expense entry."""
         _expenses_col(tax_year_id, property_id).document(expense_id).delete()
         return json.dumps({"deleted": expense_id})
+
+    @mcp.tool()
+    def update_rental_expense(
+        tax_year_id: str,
+        property_id: str,
+        expense_id: str,
+        category: Optional[str] = None,
+        amount: Optional[float] = None,
+        date: Optional[str] = None,
+        description: Optional[str] = None,
+    ) -> str:
+        """Update fields on a rental expense entry. Only provided fields are changed. Pass empty string to clear description.
+        category: WATER | PROPERTY_TAX | INSURANCE | MORTGAGE | LAWYER | RENOVATION | HYDRO | GAS | INTERNET | OTHER"""
+        ref = _expenses_col(tax_year_id, property_id).document(expense_id)
+        update_data: dict = {"updatedAt": datetime.now(timezone.utc)}
+        if category is not None:
+            update_data["category"] = category
+        if amount is not None:
+            update_data["amount"] = amount
+        if date is not None:
+            update_data["date"] = datetime.fromisoformat(date)
+        if description is not None:
+            update_data["description"] = description or None
+        ref.update(update_data)
+        doc = ref.get()
+        return json.dumps({"id": doc.id, **doc.to_dict()}, default=str)
 
     @mcp.tool()
     def add_rental_expense(
