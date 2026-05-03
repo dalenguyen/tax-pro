@@ -2,13 +2,14 @@
 
 MCP (Model Context Protocol) server for [Can Tax](https://cantax.fyi). Lets Claude Code and other MCP-compatible AI assistants read and write your Canadian tax data directly via natural language.
 
-## Tools (26 total)
+## Tools (32 total)
 
 ### Tax Years
 | Tool | Description |
 |------|-------------|
 | `list_tax_years` | List all tax years, newest first |
 | `create_tax_year` | Create a new tax year (2000–2100) |
+| `update_tax_year` | Update notes on a tax year |
 | `delete_tax_year` | Delete a tax year and all its data (income, expenses, investments, receipts, rentals) |
 
 ### Business Income
@@ -16,6 +17,7 @@ MCP (Model Context Protocol) server for [Can Tax](https://cantax.fyi). Lets Clau
 |------|-------------|
 | `list_income` | List income entries, optionally filter by `sourceType` (`RENTAL`, `INTERNET_BUSINESS`, `STRIPE`) |
 | `create_income` | Add a single income entry |
+| `update_income` | Update fields on an income entry (partial update) |
 | `delete_income` | Delete a single income entry by ID |
 | `bulk_import_income` | Batch-import multiple income entries |
 
@@ -24,6 +26,7 @@ MCP (Model Context Protocol) server for [Can Tax](https://cantax.fyi). Lets Clau
 |------|-------------|
 | `list_expenses` | List expense entries, optionally filter by `category` |
 | `create_expense` | Add a single expense entry |
+| `update_expense` | Update fields on an expense entry (partial update) |
 | `delete_expense` | Delete a single expense entry by ID |
 | `bulk_import_expenses` | Batch-import multiple expense entries |
 
@@ -32,6 +35,7 @@ MCP (Model Context Protocol) server for [Can Tax](https://cantax.fyi). Lets Clau
 |------|-------------|
 | `list_investments` | List RRSP/TFSA contributions, optionally filter by `accountType` |
 | `create_investment` | Record a new RRSP or TFSA contribution |
+| `update_investment` | Update fields on an investment contribution (partial update) |
 | `delete_investment` | Delete a single investment contribution by ID |
 
 ### Rental Properties
@@ -42,9 +46,11 @@ MCP (Model Context Protocol) server for [Can Tax](https://cantax.fyi). Lets Clau
 | `delete_rental_property` | Delete a rental property and all its income/expenses |
 | `list_rental_income` | List income entries for a property |
 | `add_rental_income` | Record rental income for a property |
+| `update_rental_income` | Update fields on a rental income entry (partial update) |
 | `delete_rental_income` | Delete a single rental income entry |
 | `list_rental_expenses` | List expenses for a property, optionally filter by `category` |
 | `add_rental_expense` | Record a rental expense for a property |
+| `update_rental_expense` | Update fields on a rental expense entry (partial update) |
 | `delete_rental_expense` | Delete a single rental expense entry |
 
 ### Receipts
@@ -125,7 +131,7 @@ Or with the flag directly:
 
 ### 3. Restart your MCP client
 
-Run `/mcp` in Claude Code — you should see `cantax-fyi` listed with 26 tools.
+Run `/mcp` in Claude Code — you should see `cantax-fyi` listed with 32 tools.
 
 ### Revoking a key
 
@@ -153,7 +159,7 @@ List all PENDING receipts for tax year <id>
 
 **Expense categories:** `EMAIL` `GCP` `NAMECHEAP` `PHONE` `INTERNET` `ADS` `HOSTING` `SOFTWARE` `OTHER`
 
-**Rental expense categories:** `WATER` `PROPERTY_TAX` `INSURANCE` `MORTGAGE` `LAWYER` `RENOVATION` `HYDRO` `OTHER`
+**Rental expense categories:** `WATER` `PROPERTY_TAX` `INSURANCE` `MORTGAGE` `LAWYER` `RENOVATION` `HYDRO` `GAS` `INTERNET` `OTHER`
 
 **Investment account types:** `RRSP` `TFSA`
 
