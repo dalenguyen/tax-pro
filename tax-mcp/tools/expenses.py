@@ -71,6 +71,46 @@ def register_expense_tools(mcp: FastMCP, db: Client, user_id: str):
         return json.dumps({"deleted": expense_id})
 
     @mcp.tool()
+    def update_expense(
+        tax_year_id: str,
+        expense_id: str,
+        category: Optional[str] = None,
+        amount: Optional[float] = None,
+        date: Optional[str] = None,
+        currency: Optional[str] = None,
+        exchange_rate: Optional[float] = None,
+        vendor: Optional[str] = None,
+        description: Optional[str] = None,
+        payment_method: Optional[str] = None,
+    ) -> str:
+        """Update fields on an expense entry. Only provided fields are changed. Pass empty string to clear optional fields.
+        category: EMAIL | GCP | NAMECHEAP | PHONE | INTERNET | ADS | HOSTING | SOFTWARE | OTHER"""
+        ref = _expense_col(db, user_id, tax_year_id).document(expense_id)
+        existing = ref.get().to_dict() or {}
+        update_data: dict = {"updatedAt": datetime.now(timezone.utc)}
+        if category is not None:
+            update_data["category"] = category
+        if date is not None:
+            update_data["date"] = datetime.fromisoformat(date)
+        if vendor is not None:
+            update_data["vendor"] = vendor or None
+        if description is not None:
+            update_data["description"] = description or None
+        if payment_method is not None:
+            update_data["paymentMethod"] = payment_method or None
+        if amount is not None or currency is not None or exchange_rate is not None:
+            eff_amount = amount if amount is not None else existing.get("amount", 0)
+            eff_currency = currency if currency is not None else existing.get("currency", "CAD")
+            eff_rate = exchange_rate if exchange_rate is not None else existing.get("exchangeRate")
+            update_data["amount"] = eff_amount
+            update_data["currency"] = eff_currency
+            update_data["exchangeRate"] = eff_rate
+            update_data["amountCad"] = _compute_amount_cad(eff_amount, eff_currency, eff_rate)
+        ref.update(update_data)
+        doc = ref.get()
+        return json.dumps({"id": doc.id, **doc.to_dict()}, default=str)
+
+    @mcp.tool()
     def bulk_import_expenses(tax_year_id: str, entries: str) -> str:
         """Batch-import multiple expense entries. entries: JSON string array, each item: {category, amount, date, currency?, exchangeRate?, vendor?, description?}"""
         parsed: list[dict] = json.loads(entries)

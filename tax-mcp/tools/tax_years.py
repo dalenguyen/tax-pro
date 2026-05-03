@@ -1,5 +1,6 @@
 import json
 from datetime import datetime, timezone
+from typing import Optional
 from google.cloud.firestore import Client
 from mcp.server.fastmcp import FastMCP
 
@@ -29,6 +30,17 @@ def register_tax_year_tools(mcp: FastMCP, db: Client, user_id: str):
         now = datetime.now(timezone.utc)
         ref = col.document()
         ref.set({"year": year, "notes": notes or None, "createdAt": now, "updatedAt": now})
+        doc = ref.get()
+        return json.dumps({"id": doc.id, **doc.to_dict()}, default=str)
+
+    @mcp.tool()
+    def update_tax_year(tax_year_id: str, notes: Optional[str] = None) -> str:
+        """Update the notes on a tax year. Pass empty string to clear notes."""
+        ref = db.collection("users").document(user_id).collection("taxYears").document(tax_year_id)
+        update_data: dict = {"updatedAt": datetime.now(timezone.utc)}
+        if notes is not None:
+            update_data["notes"] = notes or None
+        ref.update(update_data)
         doc = ref.get()
         return json.dumps({"id": doc.id, **doc.to_dict()}, default=str)
 

@@ -69,6 +69,43 @@ def register_income_tools(mcp: FastMCP, db: Client, user_id: str):
         return json.dumps({"deleted": income_id})
 
     @mcp.tool()
+    def update_income(
+        tax_year_id: str,
+        income_id: str,
+        source_type: Optional[str] = None,
+        amount: Optional[float] = None,
+        date: Optional[str] = None,
+        currency: Optional[str] = None,
+        exchange_rate: Optional[float] = None,
+        description: Optional[str] = None,
+        category: Optional[str] = None,
+    ) -> str:
+        """Update fields on an income entry. Only provided fields are changed. Pass empty string to clear optional fields.
+        source_type: RENTAL | INTERNET_BUSINESS | STRIPE"""
+        ref = _income_col(db, user_id, tax_year_id).document(income_id)
+        existing = ref.get().to_dict() or {}
+        update_data: dict = {"updatedAt": datetime.now(timezone.utc)}
+        if source_type is not None:
+            update_data["sourceType"] = source_type
+        if date is not None:
+            update_data["date"] = datetime.fromisoformat(date)
+        if description is not None:
+            update_data["description"] = description or None
+        if category is not None:
+            update_data["category"] = category or None
+        if amount is not None or currency is not None or exchange_rate is not None:
+            eff_amount = amount if amount is not None else existing.get("amount", 0)
+            eff_currency = currency if currency is not None else existing.get("currency", "CAD")
+            eff_rate = exchange_rate if exchange_rate is not None else existing.get("exchangeRate")
+            update_data["amount"] = eff_amount
+            update_data["currency"] = eff_currency
+            update_data["exchangeRate"] = eff_rate
+            update_data["amountCad"] = _compute_amount_cad(eff_amount, eff_currency, eff_rate)
+        ref.update(update_data)
+        doc = ref.get()
+        return json.dumps({"id": doc.id, **doc.to_dict()}, default=str)
+
+    @mcp.tool()
     def bulk_import_income(tax_year_id: str, entries: list[dict]) -> str:
         """Batch-import multiple income entries. Each entry: {sourceType, amount, date, currency?, exchangeRate?, description?}"""
         col = _income_col(db, user_id, tax_year_id)
