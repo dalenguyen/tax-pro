@@ -32,6 +32,8 @@ export enum RentalExpenseCategory {
   LAWYER = 'LAWYER',
   RENOVATION = 'RENOVATION',
   HYDRO = 'HYDRO',
+  GAS = 'GAS',
+  INTERNET = 'INTERNET',
   OTHER = 'OTHER',
 }
 
